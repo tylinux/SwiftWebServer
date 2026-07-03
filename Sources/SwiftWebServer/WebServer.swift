@@ -4,6 +4,7 @@ import Network
 public actor WebServer {
     private var routes: [Route]
     private var listener: NWListener?
+    private var stopContinuation: CheckedContinuation<Void, Never>?
 
     public init() {
         self.routes = []
@@ -31,19 +32,19 @@ public actor WebServer {
         let listener = try NWListener(using: parameters, on: nwPort)
         self.listener = listener
 
-        let routes = self.routes
+        let routesSnapshot = self.routes
         listener.newConnectionHandler = { connection in
             Task {
                 let connectionActor = Connection(
                     connection: connection,
-                    router: Router(routes)
+                    router: Router(routesSnapshot)
                 )
                 await connectionActor.start()
             }
         }
 
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-            listener.stateUpdateHandler = { state in
+            listener.stateUpdateHandler = { [weak self] state in
                 switch state {
                 case .ready:
                     listener.stateUpdateHandler = nil
@@ -51,6 +52,7 @@ public actor WebServer {
                 case .failed(let error):
                     listener.stateUpdateHandler = nil
                     continuation.resume(throwing: error)
+                    Task { await self?.clearListener() }
                 case .cancelled:
                     listener.stateUpdateHandler = nil
                     continuation.resume(throwing: CancellationError())
@@ -62,8 +64,21 @@ public actor WebServer {
         }
     }
 
-    public func stop() async {
-        listener?.cancel()
+    private func clearListener() {
         listener = nil
+    }
+
+    public func stop() async {
+        guard let listener else { return }
+        self.listener = nil
+
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            listener.stateUpdateHandler = { state in
+                if state == .cancelled {
+                    continuation.resume()
+                }
+            }
+            listener.cancel()
+        }
     }
 }

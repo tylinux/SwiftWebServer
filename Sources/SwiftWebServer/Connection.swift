@@ -40,14 +40,20 @@ internal actor Connection {
             let chunk = try await receive()
             if chunk.isEmpty { break }
 
-            let result = try parser.parse(chunk)
+            let result: ParseResult
+            do {
+                result = try parser.parse(chunk)
+            } catch {
+                try await sendErrorResponse(.badRequest, for: Request(method: .get, path: "/"))
+                break
+            }
+
             guard case .request(var request, _) = result else {
-                // Need more data; continue reading.
                 continue
             }
 
             guard let (route, params) = router.match(request: request) else {
-                try await sendErrorResponse(.notFound)
+                try await sendErrorResponse(.notFound, for: request)
                 break
             }
 
@@ -60,15 +66,13 @@ internal actor Connection {
                 pathParameters: params
             )
 
-            let response: Response
             do {
-                response = try await route.handler(request)
+                let response = try await route.handler(request)
+                let encoded = try ResponseEncoder().encode(response, for: request)
+                try await send(encoded)
             } catch {
-                response = Response(text: "Internal Server Error", status: .internalServerError)
+                try await sendErrorResponse(.internalServerError, for: request)
             }
-
-            let encoded = try ResponseEncoder().encode(response, for: request)
-            try await send(encoded)
             break // no keep-alive in v1
         }
     }
@@ -97,9 +101,8 @@ internal actor Connection {
         }
     }
 
-    private func sendErrorResponse(_ status: HTTPStatus) async throws {
+    private func sendErrorResponse(_ status: HTTPStatus, for request: Request) async throws {
         let response = Response(text: status.reasonPhrase, status: status)
-        let request = Request(method: .get, path: "/")
         let encoded = try ResponseEncoder().encode(response, for: request)
         try await send(encoded)
     }
