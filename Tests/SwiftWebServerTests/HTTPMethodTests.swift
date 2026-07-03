@@ -21,4 +21,17 @@ struct HTTPMethodTests {
         #expect(HTTPMethod.options == HTTPMethod(rawValue: "OPTIONS"))
         #expect(HTTPMethod.patch == HTTPMethod(rawValue: "PATCH"))
     }
+
+    @Test
+    func stringLiteral() {
+        let method: HTTPMethod = "get"
+        #expect(method == .get)
+    }
+
+    @Test
+    func hashConsistency() {
+        let get1 = HTTPMethod(rawValue: "GET")
+        let get2 = HTTPMethod(rawValue: "get")
+        #expect(get1.hashValue == get2.hashValue)
+    }
 }
