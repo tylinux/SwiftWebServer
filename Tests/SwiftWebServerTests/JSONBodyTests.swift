@@ -18,8 +18,24 @@ struct JSONBodyTests {
 
     @Test
     func encodeJSONResponse() throws {
-        let response = try Response(json: ["id": 1])
+        let response = try Response(json: User(name: "swift"))
         #expect(response.headers["Content-Type"] == "application/json")
-        #expect(response.stringBody == "{\"id\":1}")
+        let decoded: User = try response.dataBody!.decodeJSON()
+        #expect(decoded == User(name: "swift"))
+    }
+
+    @Test
+    func rejectsInvalidJSON() {
+        let data = Data("not json".utf8)
+        let request = Request(method: .post, path: "/user", body: data)
+        #expect(throws: (any Error).self) {
+            let _: User = try request.decodeJSON()
+        }
+    }
+}
+
+extension Data {
+    fileprivate func decodeJSON<T: Decodable & Sendable>(_ type: T.Type = T.self) throws -> T {
+        try JSONDecoder().decode(type, from: self)
     }
 }

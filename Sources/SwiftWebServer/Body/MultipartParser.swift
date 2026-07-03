@@ -14,56 +14,97 @@ public struct MultipartPart: Sendable {
 extension Request {
     public func multipartParts() throws -> [MultipartPart] {
         guard let contentType = headers["Content-Type"],
-              contentType.hasPrefix("multipart/form-data") else {
-            throw MultipartError.missingBoundary
+              contentType.lowercased().hasPrefix("multipart/form-data") else {
+            throw MultipartError.invalidContentType
         }
 
-        let boundaryPrefix = "boundary="
-        guard let boundaryRange = contentType.range(of: boundaryPrefix) else {
-            throw MultipartError.missingBoundary
-        }
-        var boundary = String(contentType[boundaryRange.upperBound...])
-        boundary = boundary.trimmingCharacters(in: .whitespacesAndNewlines)
-
-        let delimiter = Data("--\(boundary)".utf8)
-        let endDelimiter = Data("--\(boundary)--".utf8)
+        let boundary = try extractBoundary(from: contentType)
+        let delimiter = Data("\r\n--\(boundary)".utf8)
+        let firstDelimiter = Data("--\(boundary)".utf8)
 
         var parts: [MultipartPart] = []
-        var searchStart = body.startIndex
+
+        // Find the first delimiter. It may appear at the very start of the body
+        // as `--boundary`, or later as `\r\n--boundary`.
+        var searchStart: Data.Index
+        if body.starts(with: firstDelimiter) {
+            searchStart = firstDelimiter.count
+        } else if let firstRange = body.range(of: delimiter) {
+            searchStart = firstRange.upperBound
+        } else {
+            throw MultipartError.missingBoundary
+        }
 
         while true {
-            guard let delimiterRange = body.range(of: delimiter, in: searchStart..<body.endIndex) else { break }
-            searchStart = delimiterRange.upperBound
-
-            if body.range(of: endDelimiter, in: delimiterRange.lowerBound..<body.endIndex)?.lowerBound == delimiterRange.lowerBound {
+            // Check if this is the closing delimiter
+            let remaining = body.subdata(in: searchStart..<body.endIndex)
+            if remaining.starts(with: Data("--".utf8)) {
                 break
             }
 
-            guard let nextDelimiterRange = body.range(of: delimiter, in: searchStart..<body.endIndex) else { break }
+            // Strip leading CRLF after delimiter
+            if remaining.starts(with: Data("\r\n".utf8)) {
+                searchStart += 2
+            }
+
+            guard let nextDelimiterRange = body.range(of: delimiter, in: searchStart..<body.endIndex) else {
+                break
+            }
+
             var partData = body.subdata(in: searchStart..<nextDelimiterRange.lowerBound)
 
-            if partData.starts(with: Data("\r\n".utf8)) {
-                partData = Data(partData.dropFirst(2))
-            }
+            // Strip trailing CRLF before next delimiter
             if partData.suffix(2) == Data("\r\n".utf8) {
-                partData = Data(partData.dropLast(2))
+                partData = partData.dropLast(2)
             }
 
-            guard let blankLineRange = partData.range(of: Data("\r\n\r\n".utf8)) else { continue }
+            guard let blankLineRange = partData.range(of: Data("\r\n\r\n".utf8)) else {
+                searchStart = nextDelimiterRange.upperBound
+                continue
+            }
+
             let headerData = partData.subdata(in: partData.startIndex..<blankLineRange.lowerBound)
             let bodyData = partData.subdata(in: blankLineRange.upperBound..<partData.endIndex)
 
-            let headers = parseHeaders(from: headerData)
-            guard let disposition = headers["Content-Disposition"],
+            let partHeaders = parseHeaders(from: headerData)
+            guard let disposition = partHeaders["Content-Disposition"],
                   let name = parseDispositionValue(disposition, key: "name") else {
+                searchStart = nextDelimiterRange.upperBound
                 continue
             }
             let filename = parseDispositionValue(disposition, key: "filename")
 
-            parts.append(MultipartPart(headers: headers, name: name, filename: filename, body: bodyData))
+            parts.append(MultipartPart(headers: partHeaders, name: name, filename: filename, body: bodyData))
+            searchStart = nextDelimiterRange.upperBound
         }
 
         return parts
+    }
+
+    private func extractBoundary(from contentType: String) throws -> String {
+        let lowercased = contentType.lowercased()
+        guard let boundaryParamRange = lowercased.range(of: "boundary=") else {
+            throw MultipartError.missingBoundary
+        }
+
+        var value = String(contentType[boundaryParamRange.upperBound...])
+
+        // Strip trailing parameters/semicolons
+        if let semicolon = value.firstIndex(of: ";") {
+            value = String(value[..<semicolon])
+        }
+
+        value = value.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        // Remove surrounding quotes
+        if value.hasPrefix("\"") && value.hasSuffix("\"") {
+            value = String(value.dropFirst().dropLast())
+        }
+
+        guard !value.isEmpty else {
+            throw MultipartError.missingBoundary
+        }
+        return value
     }
 
     private func parseHeaders(from data: Data) -> HTTPHeaders {
@@ -79,8 +120,8 @@ extension Request {
     }
 
     private func parseDispositionValue(_ disposition: String, key: String) -> String? {
-        let pattern = "\(key)=\"([^\"]+)\""
-        guard let regex = try? NSRegularExpression(pattern: pattern),
+        let pattern = "\\b\(key)\\s*=\\s*\"?([^\";\\s]+)\"?"
+        guard let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive),
               let match = regex.firstMatch(in: disposition, range: NSRange(disposition.startIndex..., in: disposition)) else {
             return nil
         }
@@ -90,5 +131,6 @@ extension Request {
 }
 
 public enum MultipartError: Error, Sendable {
+    case invalidContentType
     case missingBoundary
 }

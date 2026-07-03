@@ -31,4 +31,39 @@ struct MultipartTests {
         #expect(parts[0].stringValue == "Swift")
         #expect(parts[1].filename == "hello.txt")
     }
+
+    @Test
+    func parseMultipartWithQuotedBoundary() throws {
+        let bodyString = """
+        --boundary\r\n\
+        Content-Disposition: form-data; name=text\r\n\
+        \r\n\
+        value\r\n\
+        --boundary--\r\n
+        """
+        let request = Request(
+            method: .post,
+            path: "/upload",
+            headers: HTTPHeaders([("Content-Type", "Multipart/Form-Data; boundary=\"boundary\"")]),
+            body: Data(bodyString.utf8)
+        )
+
+        let parts = try request.multipartParts()
+        #expect(parts.count == 1)
+        #expect(parts[0].name == "text")
+        #expect(parts[0].stringValue == "value")
+    }
+
+    @Test
+    func rejectsMissingBoundary() {
+        let request = Request(
+            method: .post,
+            path: "/upload",
+            headers: HTTPHeaders([("Content-Type", "multipart/form-data")]),
+            body: Data()
+        )
+        #expect(throws: MultipartError.missingBoundary.self) {
+            try request.multipartParts()
+        }
+    }
 }
