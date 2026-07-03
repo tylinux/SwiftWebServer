@@ -1,5 +1,6 @@
 import Testing
 import Foundation
+import Compression
 @testable import SwiftWebServer
 
 @Suite
@@ -24,7 +25,12 @@ struct GzipTests {
         )
         let response = Response(text: String(repeating: "a", count: 1000))
         let data = try ResponseEncoder().encode(response, for: request)
-        let string = String(data: data, encoding: .utf8)!
+        guard let separatorRange = data.range(of: Data("\r\n\r\n".utf8)) else {
+            Issue.record("Missing header/body separator")
+            return
+        }
+        let headerData = data.prefix(upTo: separatorRange.lowerBound)
+        let string = String(data: headerData, encoding: .utf8)!
         #expect(string.contains("Content-Encoding: gzip"))
     }
 
@@ -33,10 +39,8 @@ struct GzipTests {
         let bufferSize = 64 * 1024
         let filter = try InputFilter(.decompress, using: .zlib) { _ in data }
         while true {
-            var chunk = Data(count: bufferSize)
-            let length = try filter.readData(into: &chunk)
-            if length == 0 { break }
-            result.append(chunk.prefix(length))
+            guard let chunk = try filter.readData(ofLength: bufferSize), !chunk.isEmpty else { break }
+            result.append(chunk)
         }
         return result
     }

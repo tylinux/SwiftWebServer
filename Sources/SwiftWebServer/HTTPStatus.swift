@@ -14,6 +14,7 @@ public struct HTTPStatus: Hashable, Sendable {
         case 200: "OK"
         case 201: "Created"
         case 204: "No Content"
+        case 206: "Partial Content"
         case 301: "Moved Permanently"
         case 302: "Found"
         case 304: "Not Modified"
