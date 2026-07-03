@@ -1,9 +1,14 @@
 import Foundation
 import Network
 
+public enum WebServerError: Error, Sendable {
+    case alreadyRunning
+}
+
 public actor WebServer {
     private var routes: [Route]
     private var listener: NWListener?
+    private var startContinuation: CheckedContinuation<Void, Error>?
     private var stopContinuation: CheckedContinuation<Void, Never>?
 
     public init() {
@@ -27,6 +32,10 @@ public actor WebServer {
     }
 
     public func start(port: UInt16) async throws {
+        guard listener == nil else {
+            throw WebServerError.alreadyRunning
+        }
+
         let parameters = NWParameters.tcp
         let nwPort: NWEndpoint.Port = port == 0 ? .any : NWEndpoint.Port(rawValue: port)!
         let listener = try NWListener(using: parameters, on: nwPort)
@@ -43,29 +52,16 @@ public actor WebServer {
             }
         }
 
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-            listener.stateUpdateHandler = { [weak self] state in
-                switch state {
-                case .ready:
-                    listener.stateUpdateHandler = nil
-                    continuation.resume()
-                case .failed(let error):
-                    listener.stateUpdateHandler = nil
-                    continuation.resume(throwing: error)
-                    Task { await self?.clearListener() }
-                case .cancelled:
-                    listener.stateUpdateHandler = nil
-                    continuation.resume(throwing: CancellationError())
-                default:
-                    break
-                }
+        listener.stateUpdateHandler = { [weak self] state in
+            Task { [weak self] in
+                await self?.handleListenerState(state)
             }
-            listener.start(queue: .global())
         }
-    }
+        listener.start(queue: .global())
 
-    private func clearListener() {
-        listener = nil
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            self.startContinuation = continuation
+        }
     }
 
     public func stop() async {
@@ -73,12 +69,37 @@ public actor WebServer {
         self.listener = nil
 
         await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
-            listener.stateUpdateHandler = { state in
-                if state == .cancelled {
-                    continuation.resume()
-                }
-            }
+            self.stopContinuation = continuation
             listener.cancel()
+        }
+    }
+
+    private func handleListenerState(_ state: NWListener.State) {
+        switch state {
+        case .ready:
+            if let continuation = startContinuation {
+                startContinuation = nil
+                continuation.resume()
+            }
+        case .failed(let error):
+            if let continuation = startContinuation {
+                startContinuation = nil
+                continuation.resume(throwing: error)
+            } else if let continuation = stopContinuation {
+                stopContinuation = nil
+                continuation.resume()
+            }
+        case .cancelled:
+            if let continuation = startContinuation {
+                startContinuation = nil
+                continuation.resume(throwing: CancellationError())
+            }
+            if let continuation = stopContinuation {
+                stopContinuation = nil
+                continuation.resume()
+            }
+        default:
+            break
         }
     }
 }
