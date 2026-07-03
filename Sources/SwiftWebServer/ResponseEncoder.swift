@@ -1,6 +1,8 @@
 import Foundation
 
 public struct ResponseEncoder: Sendable {
+    private let gzipThreshold = 256
+
     public init() {}
 
     public func encode(_ response: Response, for request: Request) throws -> Data {
@@ -14,10 +16,12 @@ public struct ResponseEncoder: Sendable {
         var headers = response.headers
         var bodyData = try collectBodyData(from: response.body)
 
+        let isHead = request.method == .head
         let hasRange = request.headers["Range"] != nil
 
         if honorRange, let rangeHeader = request.headers["Range"] {
-            if let range = try? ByteRange(rangeHeader) {
+            do {
+                let range = try ByteRange(rangeHeader)
                 if let resolved = range.resolvedRange(for: bodyData.count) {
                     let originalLength = bodyData.count
                     bodyData = bodyData.subdata(in: resolved.start..<resolved.end + 1)
@@ -28,16 +32,19 @@ public struct ResponseEncoder: Sendable {
                     errorResponse.headers.set(name: "Content-Range", value: "bytes */\(bodyData.count)")
                     return try encode(errorResponse, for: request, honorRange: false)
                 }
+            } catch {
+                var errorResponse = Response(text: "Range Not Satisfiable").status(.rangeNotSatisfiable)
+                errorResponse.headers.set(name: "Content-Range", value: "bytes */\(bodyData.count)")
+                return try encode(errorResponse, for: request, honorRange: false)
             }
         }
 
-        let acceptsGzip = (request.headers["Accept-Encoding"] ?? "").contains("gzip")
-        if acceptsGzip && !hasRange && bodyData.count > 256 {
+        let acceptsGzip = acceptsGzip(request)
+        if acceptsGzip && !isHead && !hasRange && bodyData.count > gzipThreshold {
             bodyData = try GzipCompressor.compress(bodyData)
             headers.set(name: "Content-Encoding", value: "gzip")
         }
 
-        let isHead = request.method == .head
         if isHead {
             headers.set(name: "Content-Length", value: String(bodyData.count))
             bodyData = Data()
@@ -63,5 +70,17 @@ public struct ResponseEncoder: Sendable {
         case .data(let d): return d
         case .file(let url): return try Data(contentsOf: url)
         }
+    }
+
+    private func acceptsGzip(_ request: Request) -> Bool {
+        let header = request.headers["Accept-Encoding"] ?? ""
+        let tokens = header.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }
+        for token in tokens {
+            let parts = token.split(separator: ";").map { $0.trimmingCharacters(in: .whitespaces) }
+            if let first = parts.first, first == "gzip" {
+                return true
+            }
+        }
+        return false
     }
 }

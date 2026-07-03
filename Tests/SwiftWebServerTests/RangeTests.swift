@@ -77,4 +77,19 @@ struct RangeTests {
         #expect(string.contains("HTTP/1.1 416 Range Not Satisfiable"))
         #expect(string.contains("Content-Range: bytes */100"))
     }
+
+    @Test
+    func responseEncoderReturns416ForUnparseableRange() throws {
+        let request = Request(
+            method: .get,
+            path: "/",
+            headers: HTTPHeaders([("Range", "bytes=abc-xyz")]),
+            body: Data()
+        )
+        let response = Response(text: "hello world")
+        let data = try ResponseEncoder().encode(response, for: request)
+        let string = String(data: data, encoding: .utf8)!
+        #expect(string.contains("HTTP/1.1 416 Range Not Satisfiable"))
+        #expect(string.contains("Content-Range: bytes */11"))
+    }
 }
