@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Request: Sendable {
+public struct Request: Sendable, Equatable {
     public let method: HTTPMethod
     public let path: String
     public let query: [String: String]
