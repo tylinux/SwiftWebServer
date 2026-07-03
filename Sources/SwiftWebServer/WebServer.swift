@@ -59,8 +59,13 @@ public actor WebServer {
         }
         listener.start(queue: .global())
 
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-            self.startContinuation = continuation
+        do {
+            try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+                self.startContinuation = continuation
+            }
+        } catch {
+            self.listener = nil
+            throw error
         }
     }
 
