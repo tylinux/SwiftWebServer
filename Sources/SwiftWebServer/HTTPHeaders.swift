@@ -1,12 +1,14 @@
 public struct HTTPHeaders: Sendable, Equatable {
-    private var storage: [String: [String]]
+    private var storage: [(name: String, value: String)]
+    private var index: [String: [Int]]
 
     public init() {
-        self.storage = [:]
+        self.storage = []
+        self.index = [:]
     }
 
     public init(_ headers: [(String, String)]) {
-        self.storage = [:]
+        self.init()
         for (name, value) in headers {
             add(name: name, value: value)
         }
@@ -17,26 +19,42 @@ public struct HTTPHeaders: Sendable, Equatable {
     }
 
     public subscript(name: String) -> String? {
-        storage[Self.normalize(name)]?.first
+        guard let firstIndex = index[Self.normalize(name)]?.first else { return nil }
+        return storage[firstIndex].value
     }
 
     public func allValues(for name: String) -> [String] {
-        storage[Self.normalize(name)] ?? []
+        index[Self.normalize(name), default: []].map { storage[$0].value }
     }
 
     public mutating func add(name: String, value: String) {
         let key = Self.normalize(name)
-        storage[key, default: []].append(value)
+        let newIndex = storage.count
+        storage.append((name: name, value: value))
+        index[key, default: []].append(newIndex)
     }
 
     public mutating func set(name: String, value: String) {
         let key = Self.normalize(name)
-        storage[key] = [value]
+        storage.removeAll { Self.normalize($0.name) == key }
+        index.removeAll()
+        for (i, entry) in storage.enumerated() {
+            index[Self.normalize(entry.name), default: []].append(i)
+        }
+        add(name: name, value: value)
     }
 
     public func allHeaderLines() -> [(name: String, value: String)] {
-        storage.flatMap { key, values in
-            values.map { (name: key, value: $0) }
+        storage
+    }
+}
+
+extension HTTPHeaders {
+    public static func == (lhs: HTTPHeaders, rhs: HTTPHeaders) -> Bool {
+        guard lhs.storage.count == rhs.storage.count else { return false }
+        for (left, right) in zip(lhs.storage, rhs.storage) {
+            guard left.name == right.name, left.value == right.value else { return false }
         }
+        return true
     }
 }

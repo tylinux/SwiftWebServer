@@ -11,32 +11,29 @@ public struct ResponseEncoder: Sendable {
 
         var headers = response.headers
 
-        let bodyData: Data
-        switch response.body {
-        case .empty:
+        var bodyData = try collectBodyData(from: response.body)
+        let isHead = request.method == .head
+        if isHead {
+            headers.set(name: "Content-Length", value: String(bodyData.count))
             bodyData = Data()
-        case .data(let d):
-            bodyData = d
-        case .file(let url):
-            bodyData = try Data(contentsOf: url)
-        }
-
-        if headers["Content-Length"] == nil {
+        } else if headers["Content-Length"] == nil {
             headers.set(name: "Content-Length", value: String(bodyData.count))
         }
 
         for (name, value) in headers.allHeaderLines() {
-            data.append(Data("\(name.headerNameTitleCased): \(value)\r\n".utf8))
+            data.append(Data("\(name): \(value)\r\n".utf8))
         }
 
         data.append(Data("\r\n".utf8))
         data.append(bodyData)
         return data
     }
-}
 
-extension String {
-    fileprivate var headerNameTitleCased: String {
-        self.split(separator: "-").map { $0.capitalized }.joined(separator: "-")
+    private func collectBodyData(from body: ResponseBody) throws -> Data {
+        switch body {
+        case .empty: return Data()
+        case .data(let d): return d
+        case .file(let url): return try Data(contentsOf: url)
+        }
     }
 }

@@ -12,6 +12,15 @@ struct HTTPHeadersTests {
     }
 
     @Test
+    func preservesOriginalCasingAndOrder() {
+        var headers = HTTPHeaders()
+        headers.add(name: "X-Custom-Header", value: "first")
+        headers.add(name: "content-type", value: "text/plain")
+        let lines = headers.allHeaderLines()
+        #expect(lines.map(\.name) == ["X-Custom-Header", "content-type"])
+    }
+
+    @Test
     func addAccumulatesValues() {
         var headers = HTTPHeaders()
         headers.add(name: "Accept", value: "text/html")
