@@ -43,14 +43,14 @@ extension Request {
             var partData = body.subdata(in: searchStart..<nextDelimiterRange.lowerBound)
 
             if partData.starts(with: Data("\r\n".utf8)) {
-                partData = partData.dropFirst(2)
+                partData = Data(partData.dropFirst(2))
             }
             if partData.suffix(2) == Data("\r\n".utf8) {
-                partData = partData.dropLast(2)
+                partData = Data(partData.dropLast(2))
             }
 
             guard let blankLineRange = partData.range(of: Data("\r\n\r\n".utf8)) else { continue }
-            let headerData = partData.subdata(in: 0..<blankLineRange.lowerBound)
+            let headerData = partData.subdata(in: partData.startIndex..<blankLineRange.lowerBound)
             let bodyData = partData.subdata(in: blankLineRange.upperBound..<partData.endIndex)
 
             let headers = parseHeaders(from: headerData)

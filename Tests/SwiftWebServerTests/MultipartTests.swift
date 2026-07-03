@@ -6,7 +6,6 @@ import Foundation
 struct MultipartTests {
     @Test
     func parseMultipartForm() throws {
-        let boundary = "----WebKitFormBoundary"
         let bodyString = """
         ------WebKitFormBoundary\r\n\
         Content-Disposition: form-data; name="name"\r\n\
