@@ -14,22 +14,25 @@ public struct ResponseEncoder: Sendable {
         var headers = response.headers
         var bodyData = try collectBodyData(from: response.body)
 
+        let hasRange = request.headers["Range"] != nil
+
         if honorRange, let rangeHeader = request.headers["Range"] {
             if let range = try? ByteRange(rangeHeader) {
-                if range.isValid(for: bodyData.count) {
+                if let resolved = range.resolvedRange(for: bodyData.count) {
                     let originalLength = bodyData.count
-                    bodyData = bodyData.subdata(in: range.start..<range.end + 1)
-                    headers.set(name: "Content-Range", value: "bytes \(range.start)-\(range.end)/\(originalLength)")
-                    status = HTTPStatus(code: 206)
+                    bodyData = bodyData.subdata(in: resolved.start..<resolved.end + 1)
+                    headers.set(name: "Content-Range", value: "bytes \(resolved.start)-\(resolved.end)/\(originalLength)")
+                    status = HTTPStatus.partialContent
                 } else {
-                    let errorResponse = Response(text: "Range Not Satisfiable").status(.rangeNotSatisfiable)
+                    var errorResponse = Response(text: "Range Not Satisfiable").status(.rangeNotSatisfiable)
+                    errorResponse.headers.set(name: "Content-Range", value: "bytes */\(bodyData.count)")
                     return try encode(errorResponse, for: request, honorRange: false)
                 }
             }
         }
 
         let acceptsGzip = (request.headers["Accept-Encoding"] ?? "").contains("gzip")
-        if acceptsGzip && bodyData.count > 256 {
+        if acceptsGzip && !hasRange && bodyData.count > 256 {
             bodyData = try GzipCompressor.compress(bodyData)
             headers.set(name: "Content-Encoding", value: "gzip")
         }
@@ -38,7 +41,7 @@ public struct ResponseEncoder: Sendable {
         if isHead {
             headers.set(name: "Content-Length", value: String(bodyData.count))
             bodyData = Data()
-        } else if headers["Content-Length"] == nil {
+        } else {
             headers.set(name: "Content-Length", value: String(bodyData.count))
         }
 

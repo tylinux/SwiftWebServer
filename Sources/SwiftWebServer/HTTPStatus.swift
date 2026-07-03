@@ -41,6 +41,8 @@ public struct HTTPStatus: Hashable, Sendable {
     public static let created = HTTPStatus(code: 201)
     /// HTTP 204 No Content.
     public static let noContent = HTTPStatus(code: 204)
+    /// HTTP 206 Partial Content.
+    public static let partialContent = HTTPStatus(code: 206)
     /// HTTP 301 Moved Permanently.
     public static let movedPermanently = HTTPStatus(code: 301)
     /// HTTP 302 Found.
