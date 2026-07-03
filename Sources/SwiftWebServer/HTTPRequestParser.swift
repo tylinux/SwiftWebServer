@@ -5,6 +5,13 @@ public enum ParseResult: Equatable, Sendable {
     case request(Request, remaining: Data)
 }
 
+public enum HTTPParserError: Error, Sendable {
+    case invalidRequestLine
+    case invalidEncoding
+    case invalidContentLength
+    case invalidHeader
+}
+
 public struct HTTPRequestParser: Sendable {
     private var buffer: Data
 
@@ -20,37 +27,43 @@ public struct HTTPRequestParser: Sendable {
         }
 
         let headerData = buffer.subdata(in: 0..<headerEndRange.upperBound)
-        let headersString = String(data: headerData, encoding: .utf8) ?? ""
+        guard let headersString = String(data: headerData, encoding: .utf8) else {
+            throw HTTPParserError.invalidEncoding
+        }
         var lines = headersString.split(separator: "\r\n", omittingEmptySubsequences: false)
 
         guard let requestLine = lines.first else {
             throw HTTPParserError.invalidRequestLine
         }
         lines.removeFirst()
-        // Remove trailing empty line(s) caused by \r\n\r\n split
         while let last = lines.last, last.isEmpty {
             lines.removeLast()
         }
 
-        let requestParts = requestLine.split(separator: " ", maxSplits: 2).map(String.init)
+        let requestParts = requestLine.split(separator: " ", omittingEmptySubsequences: true)
         guard requestParts.count == 3, requestParts[2].hasPrefix("HTTP/") else {
             throw HTTPParserError.invalidRequestLine
         }
 
-        let method = HTTPMethod(rawValue: requestParts[0])
-        let (path, query) = parse(pathAndQuery: requestParts[1])
+        let method = HTTPMethod(rawValue: String(requestParts[0]))
+        let (path, query) = parse(pathAndQuery: String(requestParts[1]))
 
         var headers = HTTPHeaders()
         for line in lines {
-            let headerParts = line.split(separator: ":", maxSplits: 1).map(String.init)
-            guard headerParts.count == 2 else { continue }
-            let name = headerParts[0].trimmingCharacters(in: .whitespaces)
-            let value = headerParts[1].trimmingCharacters(in: .whitespaces)
+            let headerParts = line.split(separator: ":", maxSplits: 1)
+            guard headerParts.count == 2 else {
+                throw HTTPParserError.invalidHeader
+            }
+            let name = String(headerParts[0]).trimmingCharacters(in: .whitespaces)
+            let value = String(headerParts[1]).trimmingCharacters(in: .whitespaces)
             headers.add(name: name, value: value)
         }
 
         let bodyStart = headerEndRange.upperBound
-        let contentLength = Int(headers["Content-Length"] ?? "0") ?? 0
+        let contentLengthString = headers["Content-Length"] ?? "0"
+        guard let contentLength = Int(contentLengthString), contentLength >= 0 else {
+            throw HTTPParserError.invalidContentLength
+        }
 
         guard buffer.count >= bodyStart + contentLength else {
             return .needsMoreData
@@ -89,8 +102,4 @@ public struct HTTPRequestParser: Sendable {
         }
         return (path, query)
     }
-}
-
-public enum HTTPParserError: Error, Sendable {
-    case invalidRequestLine
 }

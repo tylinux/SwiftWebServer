@@ -44,4 +44,31 @@ struct RequestParserTests {
         let result = try parser.parse(Data(requestString.utf8))
         #expect(result == .needsMoreData)
     }
+
+    @Test
+    func rejectsInvalidRequestLine() {
+        let requestString = "GET / HTTP/1.1 extra\r\nHost: localhost\r\n\r\n"
+        var parser = HTTPRequestParser()
+        #expect(throws: HTTPParserError.invalidRequestLine.self) {
+            try parser.parse(Data(requestString.utf8))
+        }
+    }
+
+    @Test
+    func rejectsInvalidContentLength() {
+        let requestString = "POST /user HTTP/1.1\r\nContent-Length: abc\r\n\r\n"
+        var parser = HTTPRequestParser()
+        #expect(throws: HTTPParserError.invalidContentLength.self) {
+            try parser.parse(Data(requestString.utf8))
+        }
+    }
+
+    @Test
+    func rejectsMalformedHeader() {
+        let requestString = "GET / HTTP/1.1\r\nMalformedHeader\r\n\r\n"
+        var parser = HTTPRequestParser()
+        #expect(throws: HTTPParserError.invalidHeader.self) {
+            try parser.parse(Data(requestString.utf8))
+        }
+    }
 }
