@@ -10,11 +10,17 @@ public protocol Authenticator: Sendable {
 }
 
 public enum Authentication {
-    public static func basic(validator: @escaping @Sendable (String, String) -> Bool) -> any Authenticator {
-        BasicAuthenticator(validator: validator)
+    public static func basic(
+        realm: String = "SwiftWebServer",
+        validator: @escaping @Sendable (String, String) -> Bool
+    ) -> any Authenticator {
+        BasicAuthenticator(realm: realm, validator: validator)
     }
 
-    public static func digest(realm: String, passwordHashForUser: @escaping @Sendable (String) -> String?) -> any Authenticator {
+    public static func digest(
+        realm: String,
+        passwordHashForUser: @escaping @Sendable (String) -> String?
+    ) -> any Authenticator {
         DigestAuthenticator(realm: realm, passwordHashForUser: passwordHashForUser)
     }
 }

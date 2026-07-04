@@ -12,17 +12,20 @@ public struct DigestAuthenticator: Authenticator {
     }
 
     public func authenticate(_ request: Request) async -> AuthenticationResult {
-        guard let authorization = request.headers["Authorization"],
-              authorization.hasPrefix("Digest ") else {
+        guard let authorization = request.headers["Authorization"] else {
+            return .denied(wwwAuthenticateHeader: await challengeHeader())
+        }
+        let scheme = String(authorization.prefix(while: { !$0.isWhitespace }))
+        guard scheme.caseInsensitiveCompare("Digest") == .orderedSame else {
             return .denied(wwwAuthenticateHeader: await challengeHeader())
         }
 
-        let params = parseDigestParams(String(authorization.dropFirst("Digest ".count)))
+        let params = parseDigestParams(String(authorization.dropFirst("Digest".count).trimmingCharacters(in: .whitespaces)))
         guard let username = params["username"],
               let nonce = params["nonce"],
               let uri = params["uri"],
               let response = params["response"],
-              let realm = params["realm"] else {
+              params["realm"]?.caseInsensitiveCompare(realm) == .orderedSame else {
             return .denied(wwwAuthenticateHeader: await challengeHeader())
         }
 
@@ -34,6 +37,7 @@ public struct DigestAuthenticator: Authenticator {
             return .denied(wwwAuthenticateHeader: await challengeHeader())
         }
 
+        // RFC 2069 no-qop formula
         let a2 = md5("\(request.method.rawValue):\(uri)")
         let expected = md5("\(a1):\(nonce):\(a2)")
 
@@ -46,19 +50,19 @@ public struct DigestAuthenticator: Authenticator {
 
     private func challengeHeader() async -> String {
         let nonce = await nonceStore.generate()
-        return "Digest realm=\"\(realm)\", nonce=\"\(nonce)\", qop=\"auth\", algorithm=MD5"
+        return "Digest realm=\"\(realm)\", nonce=\"\(nonce)\", algorithm=MD5"
     }
 
     private func parseDigestParams(_ string: String) -> [String: String] {
         var result: [String: String] = [:]
-        let pattern = "([a-z]+)=\"([^\"]+)\""
+        let pattern = "([a-zA-Z]+)=\"([^\"]+)\""
         guard let regex = try? NSRegularExpression(pattern: pattern, options: []) else { return result }
         let nsRange = NSRange(string.startIndex..., in: string)
         for match in regex.matches(in: string, options: [], range: nsRange) {
-            guard match.numberOfRanges == 3 else { continue }
-            let keyRange = Range(match.range(at: 1), in: string)!
-            let valueRange = Range(match.range(at: 2), in: string)!
-            result[String(string[keyRange])] = String(string[valueRange])
+            guard match.numberOfRanges == 3,
+                  let keyRange = Range(match.range(at: 1), in: string),
+                  let valueRange = Range(match.range(at: 2), in: string) else { continue }
+            result[String(string[keyRange]).lowercased()] = String(string[valueRange])
         }
         return result
     }
