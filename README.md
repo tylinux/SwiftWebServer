@@ -45,7 +45,7 @@ server.addRoute(method: .get, path: "/hello") { request in
 
 server.addRoute(method: .post, path: "/api/user") { request in
     let user: User = try request.decodeJSON()
-    return Response(json: ["id": 1, "name": user.name])
+    return try Response(json: ["id": 1, "name": user.name])
         .status(.created)
 }
 

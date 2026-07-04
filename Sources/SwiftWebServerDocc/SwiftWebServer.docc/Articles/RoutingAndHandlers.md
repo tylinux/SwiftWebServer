@@ -7,6 +7,6 @@ Use `:name` for path parameters.
 ```swift
 server.addRoute(method: .get, path: "/users/:id") { request in
     let id = request.pathParameter("id")!
-    return Response(json: ["id": id])
+    return try Response(json: ["id": id])
 }
 ```
