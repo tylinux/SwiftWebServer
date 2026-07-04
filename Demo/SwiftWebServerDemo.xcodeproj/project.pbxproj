@@ -1,0 +1,668 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		09FCDBA6978CBC5EA37D01D8 /* SwiftWebServer in Frameworks */ = {isa = PBXBuildFile; productRef = 41D4A9BAF651312F44C0DD32 /* SwiftWebServer */; };
+		175CBD5D363CA02092845CF7 /* DemoServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E8972F436CCA91A644BF0C /* DemoServer.swift */; };
+		3CC9DDEBA704427395BF51B8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9118B127E0E9604BC774A35A /* ContentView.swift */; };
+		5CF4E518EF3D81F495E751AC /* SwiftWebServer in Frameworks */ = {isa = PBXBuildFile; productRef = 3B247599EE83950D0D27BBD2 /* SwiftWebServer */; };
+		669B9620000B4F77E058A82E /* SwiftWebServerDemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9F7DAF631C3BC68CB082053 /* SwiftWebServerDemoApp.swift */; };
+		7B100569511F2BB8AF41B07D /* SwiftWebServerDemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9F7DAF631C3BC68CB082053 /* SwiftWebServerDemoApp.swift */; };
+		9216E27EF862CA16FDCD55F8 /* DemoServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E8972F436CCA91A644BF0C /* DemoServer.swift */; };
+		A338A099770AB6F5C7B04CD0 /* SwiftWebServerDemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9F7DAF631C3BC68CB082053 /* SwiftWebServerDemoApp.swift */; };
+		A37710224820CEAC3BE986DF /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9118B127E0E9604BC774A35A /* ContentView.swift */; };
+		B8EB4C19A60567A9310C381B /* SwiftWebServerDemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9F7DAF631C3BC68CB082053 /* SwiftWebServerDemoApp.swift */; };
+		BB8CB17D5D6FAD6C9D59F380 /* SwiftWebServer in Frameworks */ = {isa = PBXBuildFile; productRef = 27C3AC44F62B9D4AE5363D9C /* SwiftWebServer */; };
+		C3D4962B3E2ECC759201262F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9118B127E0E9604BC774A35A /* ContentView.swift */; };
+		C82D33C86578D905233A5629 /* DemoServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E8972F436CCA91A644BF0C /* DemoServer.swift */; };
+		C8D981F9091F11C19E533D54 /* DemoServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E8972F436CCA91A644BF0C /* DemoServer.swift */; };
+		D1ED276C25589C49D5E6D3E5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9118B127E0E9604BC774A35A /* ContentView.swift */; };
+		EB162EF792A93FE9B1402D82 /* SwiftWebServer in Frameworks */ = {isa = PBXBuildFile; productRef = 9D50F05DF9B9F19745FAE380 /* SwiftWebServer */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		24ADC6294ABC9115F4DF2456 /* SwiftWebServerDemo.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SwiftWebServerDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		55501A4339226C86E31516AF /* SwiftWebServerDemo_iOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SwiftWebServerDemo_iOS.entitlements; sourceTree = "<group>"; };
+		5E6909DCDB8646EC54AB1A25 /* SwiftWebServerDemo_visionOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SwiftWebServerDemo_visionOS.entitlements; sourceTree = "<group>"; };
+		6574B611CB964322B90B95A4 /* SwiftWebServerDemo.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SwiftWebServerDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		664E4E99535F664C65B7CC43 /* SwiftWebServer */ = {isa = PBXFileReference; lastKnownFileType = folder; name = SwiftWebServer; path = ..; sourceTree = SOURCE_ROOT; };
+		6C38102515B7B833970DC956 /* SwiftWebServerDemo_tvOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SwiftWebServerDemo_tvOS.entitlements; sourceTree = "<group>"; };
+		76C3523A1A60E9C4111DE487 /* SwiftWebServerDemo_macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SwiftWebServerDemo_macOS.entitlements; sourceTree = "<group>"; };
+		9118B127E0E9604BC774A35A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		D9F7DAF631C3BC68CB082053 /* SwiftWebServerDemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftWebServerDemoApp.swift; sourceTree = "<group>"; };
+		E1E8972F436CCA91A644BF0C /* DemoServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoServer.swift; sourceTree = "<group>"; };
+		E865577766CB19F5CE6A74FC /* SwiftWebServerDemo.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SwiftWebServerDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FCAE40C6097F3E462A2947CE /* SwiftWebServerDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftWebServerDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1B9F41DAE4A7E411C08D43B8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				09FCDBA6978CBC5EA37D01D8 /* SwiftWebServer in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8D8A9D0228CE7830616F30E9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BB8CB17D5D6FAD6C9D59F380 /* SwiftWebServer in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C8E316807878D765CB1802E6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5CF4E518EF3D81F495E751AC /* SwiftWebServer in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FCAC89535761D8645C251F12 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EB162EF792A93FE9B1402D82 /* SwiftWebServer in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0435F2C0126D6819A786BE33 = {
+			isa = PBXGroup;
+			children = (
+				23BA6472A366600D4717EF67 /* Packages */,
+				2EDEEE0EB57B5FCE37BA8601 /* SwiftWebServerDemo */,
+				8CD39B5918A3D0AACEB47834 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		23BA6472A366600D4717EF67 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				664E4E99535F664C65B7CC43 /* SwiftWebServer */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+		2EDEEE0EB57B5FCE37BA8601 /* SwiftWebServerDemo */ = {
+			isa = PBXGroup;
+			children = (
+				9118B127E0E9604BC774A35A /* ContentView.swift */,
+				E1E8972F436CCA91A644BF0C /* DemoServer.swift */,
+				D9F7DAF631C3BC68CB082053 /* SwiftWebServerDemoApp.swift */,
+				65B24F79E74F34BAB7A5E655 /* Resources */,
+			);
+			path = SwiftWebServerDemo;
+			sourceTree = "<group>";
+		};
+		65B24F79E74F34BAB7A5E655 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				55501A4339226C86E31516AF /* SwiftWebServerDemo_iOS.entitlements */,
+				76C3523A1A60E9C4111DE487 /* SwiftWebServerDemo_macOS.entitlements */,
+				6C38102515B7B833970DC956 /* SwiftWebServerDemo_tvOS.entitlements */,
+				5E6909DCDB8646EC54AB1A25 /* SwiftWebServerDemo_visionOS.entitlements */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		8CD39B5918A3D0AACEB47834 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6574B611CB964322B90B95A4 /* SwiftWebServerDemo.app */,
+				FCAE40C6097F3E462A2947CE /* SwiftWebServerDemo.app */,
+				E865577766CB19F5CE6A74FC /* SwiftWebServerDemo.app */,
+				24ADC6294ABC9115F4DF2456 /* SwiftWebServerDemo.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		472511F69A47B99DC893BD7C /* SwiftWebServerDemo_visionOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5593011254FAA02E87723ACC /* Build configuration list for PBXNativeTarget "SwiftWebServerDemo_visionOS" */;
+			buildPhases = (
+				451E2E273D08DC7E34238C0F /* Sources */,
+				C8E316807878D765CB1802E6 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SwiftWebServerDemo_visionOS;
+			packageProductDependencies = (
+				3B247599EE83950D0D27BBD2 /* SwiftWebServer */,
+			);
+			productName = SwiftWebServerDemo_visionOS;
+			productReference = 24ADC6294ABC9115F4DF2456 /* SwiftWebServerDemo.app */;
+			productType = "com.apple.product-type.application";
+		};
+		613D96C544455A0FC0527A92 /* SwiftWebServerDemo_iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 35417B3E5132AC9229CB63DF /* Build configuration list for PBXNativeTarget "SwiftWebServerDemo_iOS" */;
+			buildPhases = (
+				D2045A7789DC3FA464E8AC43 /* Sources */,
+				8D8A9D0228CE7830616F30E9 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SwiftWebServerDemo_iOS;
+			packageProductDependencies = (
+				27C3AC44F62B9D4AE5363D9C /* SwiftWebServer */,
+			);
+			productName = SwiftWebServerDemo_iOS;
+			productReference = 6574B611CB964322B90B95A4 /* SwiftWebServerDemo.app */;
+			productType = "com.apple.product-type.application";
+		};
+		6EC23AF40338936227EC3655 /* SwiftWebServerDemo_macOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6A0B0D3780A6281F623691FD /* Build configuration list for PBXNativeTarget "SwiftWebServerDemo_macOS" */;
+			buildPhases = (
+				5642DCB0EE597B87DDB06ACE /* Sources */,
+				FCAC89535761D8645C251F12 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SwiftWebServerDemo_macOS;
+			packageProductDependencies = (
+				9D50F05DF9B9F19745FAE380 /* SwiftWebServer */,
+			);
+			productName = SwiftWebServerDemo_macOS;
+			productReference = FCAE40C6097F3E462A2947CE /* SwiftWebServerDemo.app */;
+			productType = "com.apple.product-type.application";
+		};
+		CB0762CAB7976A9F0C9AAB50 /* SwiftWebServerDemo_tvOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A92E940BD3B055C4420345B6 /* Build configuration list for PBXNativeTarget "SwiftWebServerDemo_tvOS" */;
+			buildPhases = (
+				31B662DCC7F3B701754DA1AC /* Sources */,
+				1B9F41DAE4A7E411C08D43B8 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SwiftWebServerDemo_tvOS;
+			packageProductDependencies = (
+				41D4A9BAF651312F44C0DD32 /* SwiftWebServer */,
+			);
+			productName = SwiftWebServerDemo_tvOS;
+			productReference = E865577766CB19F5CE6A74FC /* SwiftWebServerDemo.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B36BAC21EE8D47D42D0ABA11 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+				};
+			};
+			buildConfigurationList = 8541180E7C670B9368F7CEAF /* Build configuration list for PBXProject "SwiftWebServerDemo" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 0435F2C0126D6819A786BE33;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				11832CBA312A7923AB68A47B /* XCLocalSwiftPackageReference "..//" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 8CD39B5918A3D0AACEB47834 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				613D96C544455A0FC0527A92 /* SwiftWebServerDemo_iOS */,
+				6EC23AF40338936227EC3655 /* SwiftWebServerDemo_macOS */,
+				CB0762CAB7976A9F0C9AAB50 /* SwiftWebServerDemo_tvOS */,
+				472511F69A47B99DC893BD7C /* SwiftWebServerDemo_visionOS */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		31B662DCC7F3B701754DA1AC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3CC9DDEBA704427395BF51B8 /* ContentView.swift in Sources */,
+				175CBD5D363CA02092845CF7 /* DemoServer.swift in Sources */,
+				B8EB4C19A60567A9310C381B /* SwiftWebServerDemoApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		451E2E273D08DC7E34238C0F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A37710224820CEAC3BE986DF /* ContentView.swift in Sources */,
+				C8D981F9091F11C19E533D54 /* DemoServer.swift in Sources */,
+				7B100569511F2BB8AF41B07D /* SwiftWebServerDemoApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5642DCB0EE597B87DDB06ACE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C3D4962B3E2ECC759201262F /* ContentView.swift in Sources */,
+				9216E27EF862CA16FDCD55F8 /* DemoServer.swift in Sources */,
+				669B9620000B4F77E058A82E /* SwiftWebServerDemoApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D2045A7789DC3FA464E8AC43 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D1ED276C25589C49D5E6D3E5 /* ContentView.swift in Sources */,
+				C82D33C86578D905233A5629 /* DemoServer.swift in Sources */,
+				A338A099770AB6F5C7B04CD0 /* SwiftWebServerDemoApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		067EA6F40DAA867BF2AB9439 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TVOS_DEPLOYMENT_TARGET = 17.0;
+				XROS_DEPLOYMENT_TARGET = 1.0;
+			};
+			name = Debug;
+		};
+		1CE527F856465F133D8E758F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOLS = NO;
+				CODE_SIGN_ENTITLEMENTS = SwiftWebServerDemo/Resources/SwiftWebServerDemo_iOS.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tylinux.SwiftWebServerDemo.iOS;
+				PRODUCT_NAME = SwiftWebServerDemo;
+				SDKROOT = iphoneos;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		1F590C8E8E1F2A82F438A95C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOLS = NO;
+				CODE_SIGN_ENTITLEMENTS = SwiftWebServerDemo/Resources/SwiftWebServerDemo_macOS.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tylinux.SwiftWebServerDemo.macOS;
+				PRODUCT_NAME = SwiftWebServerDemo;
+				SDKROOT = macosx;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		6A53846ED20B1EB28A89B388 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOLS = NO;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_ENTITLEMENTS = SwiftWebServerDemo/Resources/SwiftWebServerDemo_tvOS.entitlements;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tylinux.SwiftWebServerDemo.tvOS;
+				PRODUCT_NAME = SwiftWebServerDemo;
+				SDKROOT = appletvos;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 3;
+			};
+			name = Debug;
+		};
+		6DD7B69EAED0F74D8E762D2C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOLS = NO;
+				CODE_SIGN_ENTITLEMENTS = SwiftWebServerDemo/Resources/SwiftWebServerDemo_macOS.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tylinux.SwiftWebServerDemo.macOS;
+				PRODUCT_NAME = SwiftWebServerDemo;
+				SDKROOT = macosx;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+		777B6C5306E62233A354CE60 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOLS = NO;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_ENTITLEMENTS = SwiftWebServerDemo/Resources/SwiftWebServerDemo_tvOS.entitlements;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tylinux.SwiftWebServerDemo.tvOS;
+				PRODUCT_NAME = SwiftWebServerDemo;
+				SDKROOT = appletvos;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 3;
+			};
+			name = Release;
+		};
+		8040C44CF351A28794C2D2BA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TVOS_DEPLOYMENT_TARGET = 17.0;
+				XROS_DEPLOYMENT_TARGET = 1.0;
+			};
+			name = Release;
+		};
+		DB9E583DD41C420410EA00BC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOLS = NO;
+				CODE_SIGN_ENTITLEMENTS = SwiftWebServerDemo/Resources/SwiftWebServerDemo_visionOS.entitlements;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tylinux.SwiftWebServerDemo.visionOS;
+				PRODUCT_NAME = SwiftWebServerDemo;
+				SDKROOT = xros;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 7;
+			};
+			name = Release;
+		};
+		E17B57D5C8D14958C4AC068C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOLS = NO;
+				CODE_SIGN_ENTITLEMENTS = SwiftWebServerDemo/Resources/SwiftWebServerDemo_visionOS.entitlements;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tylinux.SwiftWebServerDemo.visionOS;
+				PRODUCT_NAME = SwiftWebServerDemo;
+				SDKROOT = xros;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 7;
+			};
+			name = Debug;
+		};
+		F8D76F1D602D2D63567F3277 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOLS = NO;
+				CODE_SIGN_ENTITLEMENTS = SwiftWebServerDemo/Resources/SwiftWebServerDemo_iOS.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tylinux.SwiftWebServerDemo.iOS;
+				PRODUCT_NAME = SwiftWebServerDemo;
+				SDKROOT = iphoneos;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		35417B3E5132AC9229CB63DF /* Build configuration list for PBXNativeTarget "SwiftWebServerDemo_iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F8D76F1D602D2D63567F3277 /* Debug */,
+				1CE527F856465F133D8E758F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		5593011254FAA02E87723ACC /* Build configuration list for PBXNativeTarget "SwiftWebServerDemo_visionOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E17B57D5C8D14958C4AC068C /* Debug */,
+				DB9E583DD41C420410EA00BC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		6A0B0D3780A6281F623691FD /* Build configuration list for PBXNativeTarget "SwiftWebServerDemo_macOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1F590C8E8E1F2A82F438A95C /* Debug */,
+				6DD7B69EAED0F74D8E762D2C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		8541180E7C670B9368F7CEAF /* Build configuration list for PBXProject "SwiftWebServerDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				067EA6F40DAA867BF2AB9439 /* Debug */,
+				8040C44CF351A28794C2D2BA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		A92E940BD3B055C4420345B6 /* Build configuration list for PBXNativeTarget "SwiftWebServerDemo_tvOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6A53846ED20B1EB28A89B388 /* Debug */,
+				777B6C5306E62233A354CE60 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		11832CBA312A7923AB68A47B /* XCLocalSwiftPackageReference "..//" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "..//";
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		27C3AC44F62B9D4AE5363D9C /* SwiftWebServer */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SwiftWebServer;
+		};
+		3B247599EE83950D0D27BBD2 /* SwiftWebServer */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SwiftWebServer;
+		};
+		41D4A9BAF651312F44C0DD32 /* SwiftWebServer */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SwiftWebServer;
+		};
+		9D50F05DF9B9F19745FAE380 /* SwiftWebServer */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SwiftWebServer;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = B36BAC21EE8D47D42D0ABA11 /* Project object */;
+}
