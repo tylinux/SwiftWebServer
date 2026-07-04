@@ -5,29 +5,33 @@ public actor WebUpload {
     public let server: WebServer
     public let rootDirectory: URL
     public let pathPrefix: String
+    public let customIndexHTML: URL?
     public let authenticator: (any Authenticator)?
 
     public init(
         server: WebServer,
         rootDirectory: URL,
         at pathPrefix: String = "upload",
+        customIndexHTML: URL? = nil,
         authenticator: (any Authenticator)? = nil
     ) {
         self.server = server
         self.rootDirectory = rootDirectory
         self.pathPrefix = pathPrefix.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+        self.customIndexHTML = customIndexHTML
         self.authenticator = authenticator
     }
 
     public func configure() async {
         let rootDirectory = self.rootDirectory
         let prefix = self.pathPrefix
+        let customIndexHTML = self.customIndexHTML
         let authenticator = self.authenticator
 
         let indexPath = "/\(prefix)"
         let indexHandler: @Sendable (Request) async throws -> Response = { _ in
             let files = try listFileNames(in: rootDirectory)
-            let html = uploadPageHTML(prefix: prefix, files: files)
+            let html = uploadPageHTML(prefix: prefix, files: files, customIndexHTML: customIndexHTML)
             return Response(data: Data(html.utf8), contentType: "text/html; charset=utf-8")
         }
 
@@ -124,18 +128,37 @@ private func percentDecoded(_ string: String) -> String? {
     string.removingPercentEncoding
 }
 
-private func uploadPageHTML(prefix: String, files: [String]) -> String {
+private func uploadPageHTML(prefix: String, files: [String], customIndexHTML: URL?) -> String {
     let fileRows = files.map { name in
-        """
+        let encodedName = name.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? name
+        return """
         <li>
-          <a href="/\(prefix)/files/\(name.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? name)">\(escapeHTML(name))</a>
-          <form style="display:inline" method="post" action="/\(prefix)/files/\(name.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? name)">
+          <a href="/\(prefix)/files/\(encodedName)">\(escapeHTML(name))</a>
+          <form style="display:inline" method="post" action="/\(prefix)/files/\(encodedName)">
             <input type="hidden" name="_method" value="DELETE">
             <button type="submit">Delete</button>
           </form>
         </li>
         """
     }.joined(separator: "\n")
+
+    let template = loadIndexHTMLTemplate(customIndexHTML: customIndexHTML)
+    return template
+        .replacingOccurrences(of: "{{prefix}}", with: prefix)
+        .replacingOccurrences(of: "{{fileRows}}", with: fileRows)
+}
+
+private func loadIndexHTMLTemplate(customIndexHTML: URL?) -> String {
+    if let customIndexHTML {
+        if let template = try? String(contentsOf: customIndexHTML, encoding: .utf8) {
+            return template
+        }
+    }
+
+    if let resourceURL = Bundle.module.url(forResource: "upload", withExtension: "html"),
+       let template = try? String(contentsOf: resourceURL, encoding: .utf8) {
+        return template
+    }
 
     return """
     <!DOCTYPE html>
@@ -146,13 +169,13 @@ private func uploadPageHTML(prefix: String, files: [String]) -> String {
     </head>
     <body>
       <h1>Upload Files</h1>
-      <form method="post" action="/\(prefix)" enctype="multipart/form-data">
+      <form method="post" action="/{{prefix}}" enctype="multipart/form-data">
         <input type="file" name="file" multiple>
         <button type="submit">Upload</button>
       </form>
       <h2>Files</h2>
       <ul>
-        \(fileRows)
+        {{fileRows}}
       </ul>
     </body>
     </html>

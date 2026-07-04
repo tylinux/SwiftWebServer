@@ -33,6 +33,9 @@ let package = Package(
         .target(
             name: "SwiftWebServerWebUpload",
             dependencies: ["SwiftWebServer"],
+            resources: [
+                .process("Resources")
+            ],
             swiftSettings: [
                 .swiftLanguageMode(.v6),
                 .enableExperimentalFeature("StrictConcurrency"),

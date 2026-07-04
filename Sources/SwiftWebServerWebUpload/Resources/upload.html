@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Web Upload</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; margin: 2rem; }
+    ul { list-style: none; padding: 0; }
+    li { margin: 0.5rem 0; display: flex; align-items: center; gap: 0.5rem; }
+    a { text-decoration: none; }
+  </style>
+</head>
+<body>
+  <h1>Upload Files</h1>
+  <form method="post" action="/{{prefix}}" enctype="multipart/form-data">
+    <input type="file" name="file" multiple>
+    <button type="submit">Upload</button>
+  </form>
+  <h2>Files</h2>
+  <ul>
+    {{fileRows}}
+  </ul>
+</body>
+</html>
