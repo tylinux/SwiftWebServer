@@ -82,8 +82,7 @@ extension Request {
     }
 
     private func extractBoundary(from contentType: String) throws -> String {
-        let lowercased = contentType.lowercased()
-        guard let boundaryParamRange = lowercased.range(of: "boundary=") else {
+        guard let boundaryParamRange = contentType.range(of: "boundary=", options: .caseInsensitive) else {
             throw MultipartError.missingBoundary
         }
 
@@ -122,10 +121,10 @@ extension Request {
     private func parseDispositionValue(_ disposition: String, key: String) -> String? {
         let pattern = "\\b\(key)\\s*=\\s*\"?([^\";\\s]+)\"?"
         guard let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive),
-              let match = regex.firstMatch(in: disposition, range: NSRange(disposition.startIndex..., in: disposition)) else {
+              let match = regex.firstMatch(in: disposition, range: NSRange(disposition.startIndex..., in: disposition)),
+              let range = Range(match.range(at: 1), in: disposition) else {
             return nil
         }
-        let range = Range(match.range(at: 1), in: disposition)!
         return String(disposition[range])
     }
 }

@@ -66,4 +66,17 @@ struct MultipartTests {
             try request.multipartParts()
         }
     }
+
+    @Test
+    func rejectsInvalidContentType() {
+        let request = Request(
+            method: .post,
+            path: "/upload",
+            headers: HTTPHeaders([("Content-Type", "text/plain")]),
+            body: Data()
+        )
+        #expect(throws: MultipartError.invalidContentType.self) {
+            try request.multipartParts()
+        }
+    }
 }
