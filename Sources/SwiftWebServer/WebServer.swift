@@ -51,6 +51,22 @@ public actor WebServer {
         routes.append(Route(method: method, path: path, handler: wrappedHandler))
     }
 
+    public func addStaticFiles(
+        at pathPrefix: String,
+        directory: URL,
+        indexFile: String? = "index.html"
+    ) {
+        let trimmedPrefix = pathPrefix.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+        let pattern = "/" + trimmedPrefix + "/:path..."
+        let handler = StaticFileHandler(rootDirectory: directory, indexFile: indexFile)
+        addRoute(method: .get, path: pattern) { request in
+            handler.response(for: request)
+        }
+        addRoute(method: .head, path: pattern) { request in
+            handler.response(for: request)
+        }
+    }
+
     public func start(port: UInt16) async throws {
         guard listener == nil else {
             throw WebServerError.alreadyRunning
