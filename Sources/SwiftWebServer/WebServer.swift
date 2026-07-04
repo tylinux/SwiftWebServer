@@ -31,6 +31,26 @@ public actor WebServer {
         routes.append(Route(method: method, path: path, handler: handler))
     }
 
+    public func addRoute(
+        method: HTTPMethod,
+        path: String,
+        authenticator: any Authenticator,
+        handler: @escaping @Sendable (Request) async throws -> Response
+    ) {
+        let wrappedHandler: @Sendable (Request) async throws -> Response = { request in
+            let authResult = await authenticator.authenticate(request)
+            switch authResult {
+            case .authenticated:
+                return try await handler(request)
+            case .denied(let header):
+                var response = Response(text: "Unauthorized").status(.unauthorized)
+                response.headers.set(name: "WWW-Authenticate", value: header)
+                return response
+            }
+        }
+        routes.append(Route(method: method, path: path, handler: wrappedHandler))
+    }
+
     public func start(port: UInt16) async throws {
         guard listener == nil else {
             throw WebServerError.alreadyRunning
