@@ -14,10 +14,22 @@ let package = Package(
             name: "SwiftWebServer",
             targets: ["SwiftWebServer"]
         ),
+        .library(
+            name: "SwiftWebServerWebUpload",
+            targets: ["SwiftWebServerWebUpload"]
+        ),
     ],
     targets: [
         .target(
             name: "SwiftWebServer",
+            swiftSettings: [
+                .swiftLanguageMode(.v6),
+                .enableExperimentalFeature("StrictConcurrency"),
+            ]
+        ),
+        .target(
+            name: "SwiftWebServerWebUpload",
+            dependencies: ["SwiftWebServer"],
             swiftSettings: [
                 .swiftLanguageMode(.v6),
                 .enableExperimentalFeature("StrictConcurrency"),
@@ -41,6 +53,13 @@ let package = Package(
         .testTarget(
             name: "SwiftWebServerXCTests",
             dependencies: ["SwiftWebServer"],
+            swiftSettings: [
+                .swiftLanguageMode(.v6),
+            ]
+        ),
+        .testTarget(
+            name: "SwiftWebServerWebUploadTests",
+            dependencies: ["SwiftWebServerWebUpload"],
             swiftSettings: [
                 .swiftLanguageMode(.v6),
             ]
