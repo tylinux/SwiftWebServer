@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject private var demoServer = DemoServer()
+    @State private var showUploadedFiles = false
 
     var body: some View {
         VStack(spacing: 20) {
@@ -49,12 +50,20 @@ struct ContentView: View {
                 .disabled(!demoServer.isRunning && !demoServer.status.contains("Suspended"))
             }
 
+            Button("View Uploaded Files") {
+                showUploadedFiles = true
+            }
+            .disabled(!demoServer.isRunning)
+
             Text("Open the URL in a browser on this device.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
         .padding()
-        .frame(minWidth: 320, minHeight: 220)
+        .frame(minWidth: 320, minHeight: 240)
+        .sheet(isPresented: $showUploadedFiles) {
+            UploadedFilesView(uploadRoot: demoServer.uploadRoot)
+        }
         .onReceive(NotificationCenter.default.publisher(for: .demoServerSuspend)) { _ in
             Task { await demoServer.suspend() }
         }

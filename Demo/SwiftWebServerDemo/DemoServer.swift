@@ -10,6 +10,14 @@ final class DemoServer: ObservableObject {
     @Published var uploadURL = "-"
     @Published var isRunning = false
 
+    /// Directory where WebUpload stores files.
+    let uploadRoot: URL = {
+        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        let root = documents?.appendingPathComponent("WebUpload") ?? URL(fileURLWithPath: NSTemporaryDirectory())
+        try? FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        return root
+    }()
+
     private var server: WebServer?
 
     func start() async {
@@ -32,11 +40,6 @@ final class DemoServer: ObservableObject {
         ) { _ in
             Response(text: "Admin area")
         }
-
-        // WebUpload: files are stored in the app's Documents/WebUpload directory.
-        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-        let uploadRoot = documents?.appendingPathComponent("WebUpload") ?? URL(fileURLWithPath: NSTemporaryDirectory())
-        try? FileManager.default.createDirectory(at: uploadRoot, withIntermediateDirectories: true)
 
         let webUpload = WebUpload(server: server, rootDirectory: uploadRoot)
         await webUpload.configure()
