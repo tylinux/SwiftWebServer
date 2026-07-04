@@ -26,7 +26,7 @@ Add the dependency to `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/your-org/SwiftWebServer.git", from: "0.1.0")
+    .package(url: "https://github.com/tylinux/SwiftWebServer.git", from: "0.1.0")
 ]
 ```
 
@@ -65,6 +65,17 @@ await server.addRoute(
 }
 
 try await server.start(port: 8080)
+```
+
+## Demo
+
+A multi-platform demo app is included in the `Demo/` folder. It contains Xcode targets for iOS, iPadOS, macOS, tvOS, and visionOS, and demonstrates starting a server, basic routing, JSON responses, and Basic authentication.
+
+Open `Demo/SwiftWebServerDemo.xcodeproj` in Xcode, or regenerate it from `Demo/project.yml` with [xcodegen](https://github.com/yonaskolb/XcodeGen):
+
+```bash
+cd Demo
+xcodegen generate
 ```
 
 ## Documentation
