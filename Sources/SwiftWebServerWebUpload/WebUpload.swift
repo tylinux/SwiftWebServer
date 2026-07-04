@@ -78,16 +78,25 @@ public actor WebUpload {
             try? FileManager.default.removeItem(at: fileURL)
             return Response(text: "Deleted")
         }
+        let deleteOverrideHandler: @Sendable (Request) async throws -> Response = { request in
+            let fields = try? request.formFields()
+            guard fields?["_method"] == "DELETE" else {
+                return Response(text: "Method Not Allowed").status(.methodNotAllowed)
+            }
+            return try await deleteHandler(request)
+        }
 
         if let authenticator {
             await server.addRoute(method: .get, path: indexPath, authenticator: authenticator, handler: indexHandler)
             await server.addRoute(method: .post, path: uploadPath, authenticator: authenticator, handler: uploadHandler)
             await server.addRoute(method: .get, path: filePath, authenticator: authenticator, handler: downloadHandler)
+            await server.addRoute(method: .post, path: filePath, authenticator: authenticator, handler: deleteOverrideHandler)
             await server.addRoute(method: .delete, path: filePath, authenticator: authenticator, handler: deleteHandler)
         } else {
             await server.addRoute(method: .get, path: indexPath, handler: indexHandler)
             await server.addRoute(method: .post, path: uploadPath, handler: uploadHandler)
             await server.addRoute(method: .get, path: filePath, handler: downloadHandler)
+            await server.addRoute(method: .post, path: filePath, handler: deleteOverrideHandler)
             await server.addRoute(method: .delete, path: filePath, handler: deleteHandler)
         }
     }
