@@ -1,11 +1,13 @@
 import Foundation
 import SwiftUI
 import SwiftWebServer
+import SwiftWebServerWebUpload
 
 @MainActor
 final class DemoServer: ObservableObject {
     @Published var status = "Stopped"
     @Published var url = "-"
+    @Published var uploadURL = "-"
     @Published var isRunning = false
 
     private var server: WebServer?
@@ -31,11 +33,20 @@ final class DemoServer: ObservableObject {
             Response(text: "Admin area")
         }
 
+        // WebUpload: files are stored in the app's Documents/WebUpload directory.
+        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        let uploadRoot = documents?.appendingPathComponent("WebUpload") ?? URL(fileURLWithPath: NSTemporaryDirectory())
+        try? FileManager.default.createDirectory(at: uploadRoot, withIntermediateDirectories: true)
+
+        let webUpload = WebUpload(server: server, rootDirectory: uploadRoot)
+        await webUpload.configure()
+
         do {
             try await server.start(port: 8080)
             if let port = await server.port {
                 status = "Running on port \(port)"
                 url = "http://localhost:\(port)/hello"
+                uploadURL = "http://localhost:\(port)/upload"
                 isRunning = true
             }
             self.server = server
@@ -50,6 +61,7 @@ final class DemoServer: ObservableObject {
         server = nil
         status = "Stopped"
         url = "-"
+        uploadURL = "-"
         isRunning = false
     }
 
@@ -65,6 +77,7 @@ final class DemoServer: ObservableObject {
             if let port = await server?.port {
                 status = "Resumed on port \(port)"
                 url = "http://localhost:\(port)/hello"
+                uploadURL = "http://localhost:\(port)/upload"
                 isRunning = true
             }
         } catch {

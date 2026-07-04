@@ -9,11 +9,14 @@
 /* Begin PBXBuildFile section */
 		09FCDBA6978CBC5EA37D01D8 /* SwiftWebServer in Frameworks */ = {isa = PBXBuildFile; productRef = 41D4A9BAF651312F44C0DD32 /* SwiftWebServer */; };
 		175CBD5D363CA02092845CF7 /* DemoServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E8972F436CCA91A644BF0C /* DemoServer.swift */; };
+		2D5AAA9E237296096EAD8B6A /* SwiftWebServerWebUpload in Frameworks */ = {isa = PBXBuildFile; productRef = 9D1B5D68A943F16D12CE0579 /* SwiftWebServerWebUpload */; };
 		3CC9DDEBA704427395BF51B8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9118B127E0E9604BC774A35A /* ContentView.swift */; };
 		5CF4E518EF3D81F495E751AC /* SwiftWebServer in Frameworks */ = {isa = PBXBuildFile; productRef = 3B247599EE83950D0D27BBD2 /* SwiftWebServer */; };
 		669B9620000B4F77E058A82E /* SwiftWebServerDemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9F7DAF631C3BC68CB082053 /* SwiftWebServerDemoApp.swift */; };
 		7B100569511F2BB8AF41B07D /* SwiftWebServerDemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9F7DAF631C3BC68CB082053 /* SwiftWebServerDemoApp.swift */; };
 		9216E27EF862CA16FDCD55F8 /* DemoServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E8972F436CCA91A644BF0C /* DemoServer.swift */; };
+		92485FD47541C7DB265E9452 /* SwiftWebServerWebUpload in Frameworks */ = {isa = PBXBuildFile; productRef = A9DA2CEDE93680B9E3C2D646 /* SwiftWebServerWebUpload */; };
+		955920B0C47E12BDAFB071FD /* SwiftWebServerWebUpload in Frameworks */ = {isa = PBXBuildFile; productRef = 73757A079FC339D79A1930DA /* SwiftWebServerWebUpload */; };
 		A338A099770AB6F5C7B04CD0 /* SwiftWebServerDemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9F7DAF631C3BC68CB082053 /* SwiftWebServerDemoApp.swift */; };
 		A37710224820CEAC3BE986DF /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9118B127E0E9604BC774A35A /* ContentView.swift */; };
 		B8EB4C19A60567A9310C381B /* SwiftWebServerDemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9F7DAF631C3BC68CB082053 /* SwiftWebServerDemoApp.swift */; };
@@ -23,6 +26,7 @@
 		C8D981F9091F11C19E533D54 /* DemoServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E8972F436CCA91A644BF0C /* DemoServer.swift */; };
 		D1ED276C25589C49D5E6D3E5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9118B127E0E9604BC774A35A /* ContentView.swift */; };
 		EB162EF792A93FE9B1402D82 /* SwiftWebServer in Frameworks */ = {isa = PBXBuildFile; productRef = 9D50F05DF9B9F19745FAE380 /* SwiftWebServer */; };
+		EE47C5150974289953908CD5 /* SwiftWebServerWebUpload in Frameworks */ = {isa = PBXBuildFile; productRef = 8CDD02BA0C00B2258C5C9BF2 /* SwiftWebServerWebUpload */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +50,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				09FCDBA6978CBC5EA37D01D8 /* SwiftWebServer in Frameworks */,
+				EE47C5150974289953908CD5 /* SwiftWebServerWebUpload in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -54,6 +59,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BB8CB17D5D6FAD6C9D59F380 /* SwiftWebServer in Frameworks */,
+				955920B0C47E12BDAFB071FD /* SwiftWebServerWebUpload in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -62,6 +68,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5CF4E518EF3D81F495E751AC /* SwiftWebServer in Frameworks */,
+				92485FD47541C7DB265E9452 /* SwiftWebServerWebUpload in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -70,6 +77,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EB162EF792A93FE9B1402D82 /* SwiftWebServer in Frameworks */,
+				2D5AAA9E237296096EAD8B6A /* SwiftWebServerWebUpload in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -143,6 +151,7 @@
 			name = SwiftWebServerDemo_visionOS;
 			packageProductDependencies = (
 				3B247599EE83950D0D27BBD2 /* SwiftWebServer */,
+				A9DA2CEDE93680B9E3C2D646 /* SwiftWebServerWebUpload */,
 			);
 			productName = SwiftWebServerDemo_visionOS;
 			productReference = 24ADC6294ABC9115F4DF2456 /* SwiftWebServerDemo.app */;
@@ -162,6 +171,7 @@
 			name = SwiftWebServerDemo_iOS;
 			packageProductDependencies = (
 				27C3AC44F62B9D4AE5363D9C /* SwiftWebServer */,
+				73757A079FC339D79A1930DA /* SwiftWebServerWebUpload */,
 			);
 			productName = SwiftWebServerDemo_iOS;
 			productReference = 6574B611CB964322B90B95A4 /* SwiftWebServerDemo.app */;
@@ -181,6 +191,7 @@
 			name = SwiftWebServerDemo_macOS;
 			packageProductDependencies = (
 				9D50F05DF9B9F19745FAE380 /* SwiftWebServer */,
+				9D1B5D68A943F16D12CE0579 /* SwiftWebServerWebUpload */,
 			);
 			productName = SwiftWebServerDemo_macOS;
 			productReference = FCAE40C6097F3E462A2947CE /* SwiftWebServerDemo.app */;
@@ -200,6 +211,7 @@
 			name = SwiftWebServerDemo_tvOS;
 			packageProductDependencies = (
 				41D4A9BAF651312F44C0DD32 /* SwiftWebServer */,
+				8CDD02BA0C00B2258C5C9BF2 /* SwiftWebServerWebUpload */,
 			);
 			productName = SwiftWebServerDemo_tvOS;
 			productReference = E865577766CB19F5CE6A74FC /* SwiftWebServerDemo.app */;
@@ -666,9 +678,25 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = SwiftWebServer;
 		};
+		73757A079FC339D79A1930DA /* SwiftWebServerWebUpload */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SwiftWebServerWebUpload;
+		};
+		8CDD02BA0C00B2258C5C9BF2 /* SwiftWebServerWebUpload */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SwiftWebServerWebUpload;
+		};
+		9D1B5D68A943F16D12CE0579 /* SwiftWebServerWebUpload */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SwiftWebServerWebUpload;
+		};
 		9D50F05DF9B9F19745FAE380 /* SwiftWebServer */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SwiftWebServer;
+		};
+		A9DA2CEDE93680B9E3C2D646 /* SwiftWebServerWebUpload */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SwiftWebServerWebUpload;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

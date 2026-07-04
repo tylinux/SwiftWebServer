@@ -17,6 +17,9 @@ targets:
       - SwiftWebServerDemo
     dependencies:
       - package: SwiftWebServer
+        product: SwiftWebServer
+      - package: SwiftWebServer
+        product: SwiftWebServerWebUpload
     entitlements:
       path: SwiftWebServerDemo/Resources/SwiftWebServerDemo_${platform}.entitlements
     settings:

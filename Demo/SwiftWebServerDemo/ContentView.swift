@@ -9,9 +9,21 @@ struct ContentView: View {
                 .font(.largeTitle)
 
             Label("Status: \(demoServer.status)", systemImage: "network")
-            Text("URL: \(demoServer.url)")
-                .font(.caption)
-                .foregroundStyle(.secondary)
+
+            VStack(spacing: 4) {
+                Text("Hello URL: \(demoServer.url)")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                if let uploadURL = URL(string: demoServer.uploadURL) {
+                    Link("Open Upload Page: \(demoServer.uploadURL)", destination: uploadURL)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                } else {
+                    Text("Upload URL: \(demoServer.uploadURL)")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
 
             HStack(spacing: 16) {
                 Button("Start") {
@@ -42,7 +54,7 @@ struct ContentView: View {
                 .foregroundStyle(.secondary)
         }
         .padding()
-        .frame(minWidth: 300, minHeight: 200)
+        .frame(minWidth: 320, minHeight: 220)
         .onReceive(NotificationCenter.default.publisher(for: .demoServerSuspend)) { _ in
             Task { await demoServer.suspend() }
         }
