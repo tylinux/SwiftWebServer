@@ -79,4 +79,26 @@ struct MultipartTests {
             try request.multipartParts()
         }
     }
+
+    @Test
+    func parseQuotedFilenameWithSpaces() throws {
+        let bodyString = """
+        --boundary\r\n\
+        Content-Disposition: form-data; name="file"; filename="hello world.txt"\r\n\
+        \r\n\
+        content\r\n\
+        --boundary--\r\n
+        """
+        let request = Request(
+            method: .post,
+            path: "/upload",
+            headers: HTTPHeaders([("Content-Type", "multipart/form-data; boundary=boundary")]),
+            body: Data(bodyString.utf8)
+        )
+
+        let parts = try request.multipartParts()
+        #expect(parts.count == 1)
+        #expect(parts[0].name == "file")
+        #expect(parts[0].filename == "hello world.txt")
+    }
 }

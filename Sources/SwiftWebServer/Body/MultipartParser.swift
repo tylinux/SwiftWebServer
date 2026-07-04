@@ -119,13 +119,21 @@ extension Request {
     }
 
     private func parseDispositionValue(_ disposition: String, key: String) -> String? {
-        let pattern = "\\b\(key)\\s*=\\s*\"?([^\";\\s]+)\"?"
+        let pattern = "\\b\(key)\\s*=\\s*(?:\"([^\"]*)\"|([^\";\\s]+))"
         guard let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive),
-              let match = regex.firstMatch(in: disposition, range: NSRange(disposition.startIndex..., in: disposition)),
-              let range = Range(match.range(at: 1), in: disposition) else {
+              let match = regex.firstMatch(in: disposition, range: NSRange(disposition.startIndex..., in: disposition)) else {
             return nil
         }
-        return String(disposition[range])
+
+        let quotedRange = Range(match.range(at: 1), in: disposition)
+        let unquotedRange = Range(match.range(at: 2), in: disposition)
+
+        if let quotedRange, match.range(at: 1).location != NSNotFound {
+            return String(disposition[quotedRange])
+        } else if let unquotedRange, match.range(at: 2).location != NSNotFound {
+            return String(disposition[unquotedRange])
+        }
+        return nil
     }
 }
 
