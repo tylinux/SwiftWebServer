@@ -4,11 +4,13 @@ import Network
 internal actor Connection {
     private let connection: NWConnection
     private let router: Router
+    private let logger: LogHandler?
     private var parser = HTTPRequestParser()
 
-    init(connection: NWConnection, router: Router) {
+    init(connection: NWConnection, router: Router, logger: LogHandler? = nil) {
         self.connection = connection
         self.router = router
+        self.logger = logger
     }
 
     func start() async {
@@ -30,7 +32,7 @@ internal actor Connection {
         do {
             try await handleRequests()
         } catch {
-            print("Connection error: \(error)")
+            logger?(.error, "Connection error: \(error)")
         }
         connection.cancel()
     }
@@ -44,6 +46,7 @@ internal actor Connection {
             do {
                 result = try parser.parse(chunk)
             } catch {
+                logger?(.warning, "Bad request: \(error)")
                 try await sendErrorResponse(.badRequest, for: Request(method: .get, path: "/"))
                 break
             }
@@ -53,6 +56,7 @@ internal actor Connection {
             }
 
             guard let (route, params) = router.match(request: request) else {
+                logger?(.warning, "\(request.method.rawValue) \(request.path) 404")
                 try await sendErrorResponse(.notFound, for: request)
                 break
             }
@@ -72,6 +76,7 @@ internal actor Connection {
                 switch encoded {
                 case .complete(let data):
                     try await send(data)
+                    logger?(.info, "\(request.method.rawValue) \(request.path) \(response.status.code)")
                 case .chunked(let headers, let stream):
                     try await send(headers)
                     do {
@@ -84,12 +89,14 @@ internal actor Connection {
                             try await send(chunkData)
                         }
                         try await send(Data("0\r\n\r\n".utf8))
+                        logger?(.info, "\(request.method.rawValue) \(request.path) \(response.status.code)")
                     } catch {
                         // Stream failed after headers were sent; close the connection.
                         break
                     }
                 }
             } catch {
+                logger?(.error, "Handler error: \(error)")
                 try await sendErrorResponse(.internalServerError, for: request)
             }
             break // no keep-alive in v1

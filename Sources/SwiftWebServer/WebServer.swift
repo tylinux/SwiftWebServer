@@ -11,6 +11,13 @@ public actor WebServer {
     private var startContinuation: CheckedContinuation<Void, Error>?
     private var stopContinuation: CheckedContinuation<Void, Never>?
 
+    /// Optional log handler. Set to `nil` to disable logging.
+    public var logHandler: LogHandler?
+
+    public func setLogHandler(_ handler: LogHandler?) {
+        self.logHandler = handler
+    }
+
     public init() {
         self.routes = []
     }
@@ -78,11 +85,13 @@ public actor WebServer {
         self.listener = listener
 
         let routesSnapshot = self.routes
+        let logger = self.logHandler
         listener.newConnectionHandler = { connection in
             Task {
                 let connectionActor = Connection(
                     connection: connection,
-                    router: Router(routesSnapshot)
+                    router: Router(routesSnapshot),
+                    logger: logger
                 )
                 await connectionActor.start()
             }
@@ -99,6 +108,9 @@ public actor WebServer {
             try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
                 self.startContinuation = continuation
             }
+            if let port = self.port {
+                self.logHandler?(.info, "Server started on port \(port)")
+            }
         } catch {
             self.listener = nil
             throw error
@@ -113,6 +125,7 @@ public actor WebServer {
             self.stopContinuation = continuation
             listener.cancel()
         }
+        self.logHandler?(.info, "Server stopped")
     }
 
     private func handleListenerState(_ state: NWListener.State) {
@@ -123,6 +136,7 @@ public actor WebServer {
                 continuation.resume()
             }
         case .failed(let error):
+            self.logHandler?(.error, "Listener failed: \(error)")
             if let continuation = startContinuation {
                 startContinuation = nil
                 continuation.resume(throwing: error)

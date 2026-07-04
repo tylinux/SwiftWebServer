@@ -3,6 +3,7 @@ import Testing
 @testable import SwiftWebServer
 @testable import SwiftWebServerWebUpload
 
+@Suite(.serialized)
 struct WebUploadTests {
     private func makeTempDirectory() throws -> URL {
         let base = FileManager.default.temporaryDirectory
