@@ -15,6 +15,11 @@ SwiftWebServer lets you run an HTTP server inside your app. It is designed aroun
 - ``Response``
 - ``Route``
 
+### Articles
+
+- <doc:GettingStarted>
+- <doc:RoutingAndHandlers>
+
 ### Authentication
 
 - ``Authenticator``

@@ -37,22 +37,27 @@ Or add it in Xcode via **File → Add Package Dependencies**.
 ```swift
 import SwiftWebServer
 
+struct User: Codable {
+    let name: String
+}
+
 let server = WebServer()
 
-server.addRoute(method: .get, path: "/hello") { request in
+// `addRoute` is isolated to the `WebServer` actor, so call it with `await`.
+await server.addRoute(method: .get, path: "/hello") { request in
     Response(text: "Hello, \(request.query["name"] ?? "world")!")
 }
 
-server.addRoute(method: .post, path: "/api/user") { request in
+await server.addRoute(method: .post, path: "/api/user") { request in
     let user: User = try request.decodeJSON()
     return try Response(json: ["id": 1, "name": user.name])
         .status(.created)
 }
 
-server.addRoute(
+await server.addRoute(
     method: .get,
     path: "/admin",
-    authenticator: .basic { username, password in
+    authenticator: Authentication.basic { username, password in
         username == "admin" && password == "secret"
     }
 ) { request in
