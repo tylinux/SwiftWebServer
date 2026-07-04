@@ -9,7 +9,7 @@ public struct BasicAuthenticator: Authenticator {
         self.validator = validator
     }
 
-    public func authenticate(_ request: Request) -> AuthenticationResult {
+    public func authenticate(_ request: Request) async -> AuthenticationResult {
         guard let header = request.headers["Authorization"] else {
             return .denied(wwwAuthenticateHeader: "Basic realm=\"\(realm)\"")
         }
