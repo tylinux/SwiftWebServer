@@ -1,15 +1,36 @@
 import Foundation
 
+public enum ResponseEncoderError: Error, Sendable {
+    case streamResponseMustBeSentChunked
+}
+
 public struct ResponseEncoder: Sendable {
     private let gzipThreshold = 256
 
     public init() {}
 
     public func encode(_ response: Response, for request: Request) throws -> Data {
-        try encode(response, for: request, honorRange: true)
+        let encoded = try encodeResponse(response, for: request)
+        switch encoded {
+        case .complete(let data):
+            return data
+        case .chunked:
+            throw ResponseEncoderError.streamResponseMustBeSentChunked
+        }
     }
 
-    private func encode(_ response: Response, for request: Request, honorRange: Bool) throws -> Data {
+    internal func encodeResponse(_ response: Response, for request: Request) throws -> EncodedResponse {
+        if case .stream(let stream) = response.body {
+            return try encodeStream(response, stream: stream, for: request)
+        }
+        return .complete(try encodeComplete(response, for: request))
+    }
+
+    private func encodeComplete(
+        _ response: Response,
+        for request: Request,
+        honorRange: Bool = true
+    ) throws -> Data {
         var data = Data()
 
         var status = response.status
@@ -30,12 +51,12 @@ public struct ResponseEncoder: Sendable {
                 } else {
                     var errorResponse = Response(text: "Range Not Satisfiable").status(.rangeNotSatisfiable)
                     errorResponse.headers.set(name: "Content-Range", value: "bytes */\(bodyData.count)")
-                    return try encode(errorResponse, for: request, honorRange: false)
+                    return try encodeComplete(errorResponse, for: request, honorRange: false)
                 }
             } catch {
                 var errorResponse = Response(text: "Range Not Satisfiable").status(.rangeNotSatisfiable)
                 errorResponse.headers.set(name: "Content-Range", value: "bytes */\(bodyData.count)")
-                return try encode(errorResponse, for: request, honorRange: false)
+                return try encodeComplete(errorResponse, for: request, honorRange: false)
             }
         }
 
@@ -64,11 +85,35 @@ public struct ResponseEncoder: Sendable {
         return data
     }
 
+    private func encodeStream(
+        _ response: Response,
+        stream: AsyncThrowingStream<Data, Error>,
+        for request: Request
+    ) throws -> EncodedResponse {
+        var headers = response.headers
+        headers.remove(name: "Content-Length")
+        headers.set(name: "Transfer-Encoding", value: "chunked")
+
+        let statusLine = "HTTP/1.1 \(response.status.code) \(response.status.reasonPhrase)\r\n"
+        var headerData = Data(statusLine.utf8)
+        for (name, value) in headers.allHeaderLines() {
+            headerData.append(Data("\(name): \(value)\r\n".utf8))
+        }
+        headerData.append(Data("\r\n".utf8))
+
+        if request.method == .head {
+            return .complete(headerData)
+        }
+
+        return .chunked(headers: headerData, stream: stream)
+    }
+
     private func collectBodyData(from body: ResponseBody) throws -> Data {
         switch body {
         case .empty: return Data()
         case .data(let d): return d
         case .file(let url): return try Data(contentsOf: url)
+        case .stream: fatalError("Streaming bodies must use encodeResponse(_:for:)")
         }
     }
 
@@ -83,4 +128,9 @@ public struct ResponseEncoder: Sendable {
         }
         return false
     }
+}
+
+internal enum EncodedResponse {
+    case complete(Data)
+    case chunked(headers: Data, stream: AsyncThrowingStream<Data, Error>)
 }

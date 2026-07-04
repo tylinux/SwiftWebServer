@@ -44,6 +44,15 @@ public struct HTTPHeaders: Sendable, Equatable {
         add(name: name, value: value)
     }
 
+    public mutating func remove(name: String) {
+        let key = Self.normalize(name)
+        storage.removeAll { Self.normalize($0.name) == key }
+        index.removeAll()
+        for (i, entry) in storage.enumerated() {
+            index[Self.normalize(entry.name), default: []].append(i)
+        }
+    }
+
     public func allHeaderLines() -> [(name: String, value: String)] {
         storage
     }

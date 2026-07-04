@@ -68,8 +68,27 @@ internal actor Connection {
 
             do {
                 let response = try await route.handler(request)
-                let encoded = try ResponseEncoder().encode(response, for: request)
-                try await send(encoded)
+                let encoded = try ResponseEncoder().encodeResponse(response, for: request)
+                switch encoded {
+                case .complete(let data):
+                    try await send(data)
+                case .chunked(let headers, let stream):
+                    try await send(headers)
+                    do {
+                        for try await chunk in stream {
+                            guard !chunk.isEmpty else { continue }
+                            var chunkData = Data(String(chunk.count, radix: 16, uppercase: false).utf8)
+                            chunkData.append(Data("\r\n".utf8))
+                            chunkData.append(chunk)
+                            chunkData.append(Data("\r\n".utf8))
+                            try await send(chunkData)
+                        }
+                        try await send(Data("0\r\n\r\n".utf8))
+                    } catch {
+                        // Stream failed after headers were sent; close the connection.
+                        break
+                    }
+                }
             } catch {
                 try await sendErrorResponse(.internalServerError, for: request)
             }

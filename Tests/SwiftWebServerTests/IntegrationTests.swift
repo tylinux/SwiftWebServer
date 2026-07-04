@@ -79,6 +79,31 @@ struct IntegrationTests {
         await server.stop()
         #expect(await server.isRunning == false)
     }
+
+    @Test
+    func chunkedResponse() async throws {
+        let server = WebServer()
+        await server.addRoute(method: .get, path: "/stream") { _ in
+            let stream = AsyncThrowingStream<Data, Error> { continuation in
+                continuation.yield(Data("abc".utf8))
+                continuation.yield(Data("def".utf8))
+                continuation.finish()
+            }
+            var headers = HTTPHeaders()
+            headers.set(name: "Content-Type", value: "text/plain")
+            return Response(stream: stream, headers: headers)
+        }
+        try await server.start(port: 0)
+        let port = try #require(await server.port)
+
+        let url = URL(string: "http://127.0.0.1:\(port)/stream")!
+        let (data, response) = try await URLSession.shared.data(from: url)
+        let httpResponse = try #require(response as? HTTPURLResponse)
+        #expect(httpResponse.statusCode == 200)
+        #expect(String(data: data, encoding: .utf8) == "abcdef")
+
+        await server.stop()
+    }
 }
 
 enum TestError: Error, Sendable {

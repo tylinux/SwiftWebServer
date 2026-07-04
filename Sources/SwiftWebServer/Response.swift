@@ -4,6 +4,7 @@ public enum ResponseBody: Sendable {
     case empty
     case data(Data)
     case file(URL)
+    case stream(AsyncThrowingStream<Data, Error>)
 }
 
 public struct Response: Sendable {
@@ -42,6 +43,14 @@ public struct Response: Sendable {
         self.init(status: .ok, headers: headers, body: .file(url))
     }
 
+    public init(
+        stream: AsyncThrowingStream<Data, Error>,
+        status: HTTPStatus = .ok,
+        headers: HTTPHeaders = HTTPHeaders()
+    ) {
+        self.init(status: status, headers: headers, body: .stream(stream))
+    }
+
     public func status(_ status: HTTPStatus) -> Response {
         var copy = self
         copy.status = status
@@ -52,7 +61,7 @@ public struct Response: Sendable {
         switch body {
         case .data(let data): data
         case .empty: Data()
-        case .file: nil
+        case .file, .stream: nil
         }
     }
 
