@@ -1,5 +1,6 @@
 import Foundation
 import Network
+import Security
 
 internal actor Connection {
     private let connection: NWConnection
@@ -29,12 +30,31 @@ internal actor Connection {
 
         guard connection.state == .ready else { return }
 
+        if let protocolName = negotiatedProtocol(), protocolName == "h2" {
+            logger?(.warning, "HTTP/2 requested via ALPN but not supported")
+            let response = Data("HTTP/1.1 505 HTTP Version Not Supported\r\nConnection: close\r\nContent-Length: 0\r\n\r\n".utf8)
+            try? await send(response)
+            connection.cancel()
+            return
+        }
+
         do {
             try await handleRequests()
         } catch {
             logger?(.error, "Connection error: \(error)")
         }
         connection.cancel()
+    }
+
+    private func negotiatedProtocol() -> String? {
+        guard let metadata = connection.metadata(definition: NWProtocolTLS.definition) as? NWProtocolTLS.Metadata else {
+            return nil
+        }
+        let spm = metadata.securityProtocolMetadata
+        guard let cString = sec_protocol_metadata_get_negotiated_protocol(spm) else {
+            return nil
+        }
+        return String(cString: cString)
     }
 
     func stop() {
@@ -81,7 +101,7 @@ internal actor Connection {
                 break
             }
 
-            var routedRequest = Request(
+            let routedRequest = Request(
                 method: request.method,
                 path: request.path,
                 query: request.query,

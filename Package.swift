@@ -22,6 +22,9 @@ let package = Package(
     targets: [
         .target(
             name: "SwiftWebServer",
+            resources: [
+                .process("TLS/Resources")
+            ],
             swiftSettings: [
                 .swiftLanguageMode(.v6),
                 .enableExperimentalFeature("StrictConcurrency"),

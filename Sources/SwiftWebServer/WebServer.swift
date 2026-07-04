@@ -1,5 +1,6 @@
 import Foundation
 import Network
+import Security
 
 public enum WebServerError: Error, Sendable {
     case alreadyRunning
@@ -87,6 +88,25 @@ public actor WebServer {
 
     public func start(port: UInt16) async throws {
         try await start(port: port, parameters: NWParameters.tcp)
+    }
+
+    public func start(port: UInt16, tls: TLSConfiguration) async throws {
+        try await start(port: port, parameters: tlsParameters(for: tls))
+    }
+
+    private func tlsParameters(for tls: TLSConfiguration) -> NWParameters {
+        let options = NWProtocolTLS.Options()
+        let secOptions = options.securityProtocolOptions
+
+        if let secIdentity = sec_identity_create(tls.identity) {
+            sec_protocol_options_set_local_identity(secOptions, secIdentity)
+        }
+
+        for proto in tls.applicationProtocols {
+            sec_protocol_options_add_tls_application_protocol(secOptions, proto)
+        }
+
+        return NWParameters(tls: options)
     }
 
     private func start(port: UInt16, parameters: NWParameters) async throws {
