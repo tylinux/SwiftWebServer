@@ -14,17 +14,27 @@ struct ContentView: View {
                 .foregroundStyle(.secondary)
 
             HStack(spacing: 16) {
-                Button("Start Server") {
+                Button("Start") {
                     Task { await demoServer.start() }
                 }
                 .buttonStyle(.borderedProminent)
                 .disabled(demoServer.isRunning)
 
-                Button("Stop Server") {
+                Button("Suspend") {
+                    Task { await demoServer.suspend() }
+                }
+                .disabled(!demoServer.isRunning)
+
+                Button("Resume") {
+                    Task { await demoServer.resume() }
+                }
+                .disabled(demoServer.isRunning)
+
+                Button("Stop") {
                     Task { await demoServer.stop() }
                 }
                 .buttonStyle(.bordered)
-                .disabled(!demoServer.isRunning)
+                .disabled(!demoServer.isRunning && !demoServer.status.contains("Suspended"))
             }
 
             Text("Open the URL in a browser on this device.")
@@ -33,5 +43,11 @@ struct ContentView: View {
         }
         .padding()
         .frame(minWidth: 300, minHeight: 200)
+        .onReceive(NotificationCenter.default.publisher(for: .demoServerSuspend)) { _ in
+            Task { await demoServer.suspend() }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .demoServerResume)) { _ in
+            Task { await demoServer.resume() }
+        }
     }
 }

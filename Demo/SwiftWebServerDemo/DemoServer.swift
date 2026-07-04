@@ -52,4 +52,23 @@ final class DemoServer: ObservableObject {
         url = "-"
         isRunning = false
     }
+
+    func suspend() async {
+        await server?.suspend()
+        status = "Suspended"
+        isRunning = false
+    }
+
+    func resume() async {
+        do {
+            try await server?.resume()
+            if let port = await server?.port {
+                status = "Resumed on port \(port)"
+                url = "http://localhost:\(port)/hello"
+                isRunning = true
+            }
+        } catch {
+            status = "Resume error: \(error.localizedDescription)"
+        }
+    }
 }

@@ -45,14 +45,7 @@ let package = Package(
         ),
         .testTarget(
             name: "SwiftWebServerTests",
-            dependencies: ["SwiftWebServer"],
-            swiftSettings: [
-                .swiftLanguageMode(.v6),
-            ]
-        ),
-        .testTarget(
-            name: "SwiftWebServerWebUploadTests",
-            dependencies: ["SwiftWebServerWebUpload"],
+            dependencies: ["SwiftWebServer", "SwiftWebServerWebUpload"],
             swiftSettings: [
                 .swiftLanguageMode(.v6),
             ]

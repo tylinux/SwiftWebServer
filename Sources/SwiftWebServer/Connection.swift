@@ -37,6 +37,10 @@ internal actor Connection {
         connection.cancel()
     }
 
+    func stop() {
+        connection.cancel()
+    }
+
     private func handleRequests() async throws {
         while true {
             let chunk = try await receive()
