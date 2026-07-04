@@ -23,6 +23,14 @@ let package = Package(
                 .enableExperimentalFeature("StrictConcurrency"),
             ]
         ),
+        .target(
+            name: "SwiftWebServerDocc",
+            dependencies: ["SwiftWebServer"],
+            path: "Sources/SwiftWebServerDocc",
+            resources: [
+                .process("SwiftWebServer.docc")
+            ]
+        ),
         .testTarget(
             name: "SwiftWebServerTests",
             dependencies: ["SwiftWebServer"],
