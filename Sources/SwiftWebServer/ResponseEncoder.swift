@@ -73,6 +73,8 @@ public struct ResponseEncoder: Sendable {
             headers.set(name: "Content-Length", value: String(bodyData.count))
         }
 
+        headers.set(name: "Connection", value: connectionHeaderValue(for: request))
+
         let statusLine = "HTTP/1.1 \(status.code) \(status.reasonPhrase)\r\n"
         data.append(Data(statusLine.utf8))
 
@@ -93,6 +95,7 @@ public struct ResponseEncoder: Sendable {
         var headers = response.headers
         headers.remove(name: "Content-Length")
         headers.set(name: "Transfer-Encoding", value: "chunked")
+        headers.set(name: "Connection", value: connectionHeaderValue(for: request))
 
         let statusLine = "HTTP/1.1 \(response.status.code) \(response.status.reasonPhrase)\r\n"
         var headerData = Data(statusLine.utf8)
@@ -127,6 +130,19 @@ public struct ResponseEncoder: Sendable {
             }
         }
         return false
+    }
+
+    private func connectionHeaderValue(for request: Request) -> String {
+        let connectionHeader = request.headers["Connection"]?.lowercased()
+        let isHTTP1_0 = request.httpVersion.hasPrefix("HTTP/1.0")
+
+        if connectionHeader == "close" {
+            return "close"
+        }
+        if connectionHeader == "keep-alive" {
+            return "keep-alive"
+        }
+        return isHTTP1_0 ? "close" : "keep-alive"
     }
 }
 

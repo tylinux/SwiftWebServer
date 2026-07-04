@@ -7,6 +7,7 @@ public struct Request: Sendable, Equatable {
     public let headers: HTTPHeaders
     public let body: Data
     public let pathParameters: [String: String]
+    public let httpVersion: String
 
     public init(
         method: HTTPMethod,
@@ -14,7 +15,8 @@ public struct Request: Sendable, Equatable {
         query: [String: String] = [:],
         headers: HTTPHeaders = HTTPHeaders(),
         body: Data = Data(),
-        pathParameters: [String: String] = [:]
+        pathParameters: [String: String] = [:],
+        httpVersion: String = "HTTP/1.1"
     ) {
         self.method = method
         self.path = path
@@ -22,6 +24,7 @@ public struct Request: Sendable, Equatable {
         self.headers = headers
         self.body = body
         self.pathParameters = pathParameters
+        self.httpVersion = httpVersion
     }
 
     public func pathParameter(_ name: String) -> String? {

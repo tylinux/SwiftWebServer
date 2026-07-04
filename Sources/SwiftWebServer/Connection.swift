@@ -43,20 +43,36 @@ internal actor Connection {
 
     private func handleRequests() async throws {
         while true {
-            let chunk = try await receive()
-            if chunk.isEmpty { break }
-
-            let result: ParseResult
+            // Try to parse any buffered bytes before waiting for more data.
+            let parseResult: ParseResult
             do {
-                result = try parser.parse(chunk)
+                parseResult = try parser.parse(Data())
             } catch {
                 logger?(.warning, "Bad request: \(error)")
                 try await sendErrorResponse(.badRequest, for: Request(method: .get, path: "/"))
                 break
             }
 
-            guard case .request(var request, _) = result else {
-                continue
+            let request: Request
+            if case .request(let parsedRequest, _) = parseResult {
+                request = parsedRequest
+            } else {
+                let chunk = try await receive()
+                if chunk.isEmpty { break }
+
+                let result: ParseResult
+                do {
+                    result = try parser.parse(chunk)
+                } catch {
+                    logger?(.warning, "Bad request: \(error)")
+                    try await sendErrorResponse(.badRequest, for: Request(method: .get, path: "/"))
+                    break
+                }
+
+                guard case .request(let parsedRequest, _) = result else {
+                    continue
+                }
+                request = parsedRequest
             }
 
             guard let (route, params) = router.match(request: request) else {
@@ -65,22 +81,23 @@ internal actor Connection {
                 break
             }
 
-            request = Request(
+            var routedRequest = Request(
                 method: request.method,
                 path: request.path,
                 query: request.query,
                 headers: request.headers,
                 body: request.body,
-                pathParameters: params
+                pathParameters: params,
+                httpVersion: request.httpVersion
             )
 
             do {
-                let response = try await route.handler(request)
-                let encoded = try ResponseEncoder().encodeResponse(response, for: request)
+                let response = try await route.handler(routedRequest)
+                let encoded = try ResponseEncoder().encodeResponse(response, for: routedRequest)
                 switch encoded {
                 case .complete(let data):
                     try await send(data)
-                    logger?(.info, "\(request.method.rawValue) \(request.path) \(response.status.code)")
+                    logger?(.info, "\(routedRequest.method.rawValue) \(routedRequest.path) \(response.status.code)")
                 case .chunked(let headers, let stream):
                     try await send(headers)
                     do {
@@ -93,7 +110,7 @@ internal actor Connection {
                             try await send(chunkData)
                         }
                         try await send(Data("0\r\n\r\n".utf8))
-                        logger?(.info, "\(request.method.rawValue) \(request.path) \(response.status.code)")
+                        logger?(.info, "\(routedRequest.method.rawValue) \(routedRequest.path) \(response.status.code)")
                     } catch {
                         // Stream failed after headers were sent; close the connection.
                         break
@@ -101,10 +118,25 @@ internal actor Connection {
                 }
             } catch {
                 logger?(.error, "Handler error: \(error)")
-                try await sendErrorResponse(.internalServerError, for: request)
+                try await sendErrorResponse(.internalServerError, for: routedRequest)
+                break
             }
-            break // no keep-alive in v1
+
+            if shouldCloseConnection(after: routedRequest) {
+                break
+            }
         }
+    }
+
+    private func shouldCloseConnection(after request: Request) -> Bool {
+        let connectionHeader = request.headers["Connection"]?.lowercased()
+        if connectionHeader == "close" {
+            return true
+        }
+        if request.httpVersion.hasPrefix("HTTP/1.0"), connectionHeader != "keep-alive" {
+            return true
+        }
+        return false
     }
 
     private func receive() async throws -> Data {

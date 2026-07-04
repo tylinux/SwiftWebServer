@@ -47,6 +47,7 @@ public struct HTTPRequestParser: Sendable {
 
         let method = HTTPMethod(rawValue: String(requestParts[0]))
         let (path, query) = parse(pathAndQuery: String(requestParts[1]))
+        let httpVersion = String(requestParts[2])
 
         var headers = HTTPHeaders()
         for line in lines {
@@ -72,7 +73,7 @@ public struct HTTPRequestParser: Sendable {
         let bodyEnd = bodyStart + contentLength
         let body = buffer.subdata(in: bodyStart..<bodyEnd)
         let remaining = buffer.count > bodyEnd ? buffer.subdata(in: bodyEnd..<buffer.count) : Data()
-        buffer = Data()
+        buffer = remaining
 
         let request = Request(
             method: method,
@@ -80,7 +81,8 @@ public struct HTTPRequestParser: Sendable {
             query: query,
             headers: headers,
             body: body,
-            pathParameters: [:]
+            pathParameters: [:],
+            httpVersion: httpVersion
         )
         return .request(request, remaining: remaining)
     }

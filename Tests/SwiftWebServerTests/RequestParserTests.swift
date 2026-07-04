@@ -68,7 +68,27 @@ struct RequestParserTests {
         let requestString = "GET / HTTP/1.1\r\nMalformedHeader\r\n\r\n"
         var parser = HTTPRequestParser()
         #expect(throws: HTTPParserError.invalidHeader.self) {
-            try parser.parse(Data(requestString.utf8))
+            _ = try parser.parse(Data(requestString.utf8))
         }
+    }
+
+    @Test
+    func parsesTwoPipelinedRequests() throws {
+        var parser = HTTPRequestParser()
+        let data = Data("GET /first HTTP/1.1\r\nHost: localhost\r\n\r\nGET /second HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n".utf8)
+
+        let first = try parser.parse(data)
+        guard case .request(let request1, _) = first else {
+            Issue.record("Expected first request")
+            return
+        }
+        #expect(request1.path == "/first")
+
+        let second = try parser.parse(Data())
+        guard case .request(let request2, _) = second else {
+            Issue.record("Expected second request")
+            return
+        }
+        #expect(request2.path == "/second")
     }
 }
