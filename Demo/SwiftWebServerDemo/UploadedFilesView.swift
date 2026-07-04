@@ -30,6 +30,8 @@ struct UploadedFilesView: View {
             }
             .task { loadFiles() }
             .refreshable { loadFiles() }
+            .frame(minWidth: 360, minHeight: 480)
+            .presentationCornerRadius(16)
         }
     }
 
