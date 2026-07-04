@@ -43,31 +43,33 @@ jobs:
           cd Demo
           xcodebuild -project SwiftWebServerDemo.xcodeproj \
             -scheme SwiftWebServerDemo_macOS \
-            -destination 'platform=macOS' \
+            -destination 'generic/platform=macOS' \
+            CODE_SIGNING_ALLOWED=NO \
             build
 
-      - name: Build Demo (iOS Simulator)
+      - name: Build Demo (iOS)
         run: |
           cd Demo
           xcodebuild -project SwiftWebServerDemo.xcodeproj \
             -scheme SwiftWebServerDemo_iOS \
-            -destination 'platform=iOS Simulator,name=iPhone 17' \
+            -destination 'generic/platform=iOS' \
+            CODE_SIGNING_ALLOWED=NO \
             build
 
-      - name: Build Demo (tvOS Simulator)
-        continue-on-error: true
+      - name: Build Demo (tvOS)
         run: |
           cd Demo
           xcodebuild -project SwiftWebServerDemo.xcodeproj \
             -scheme SwiftWebServerDemo_tvOS \
-            -destination 'platform=tvOS Simulator,name=Apple TV' \
+            -destination 'generic/platform=tvOS' \
+            CODE_SIGNING_ALLOWED=NO \
             build
 
-      - name: Build Demo (visionOS Simulator)
-        continue-on-error: true
+      - name: Build Demo (visionOS)
         run: |
           cd Demo
           xcodebuild -project SwiftWebServerDemo.xcodeproj \
             -scheme SwiftWebServerDemo_visionOS \
-            -destination 'platform=visionOS Simulator,name=Apple Vision Pro' \
+            -destination 'generic/platform=visionOS' \
+            CODE_SIGNING_ALLOWED=NO \
             build
